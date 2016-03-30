@@ -15,6 +15,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+Contact:
+
+bobby@bobbydurrettdba.com
+
 dbgraphs.py
 
 Top level script to give option to run various graphs.

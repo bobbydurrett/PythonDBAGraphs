@@ -7,3 +7,8 @@ http://www.bobbydurrettdba.com/2016/01/06/trying-python-and-pyplot-for-database-
 http://www.bobbydurrettdba.com/2016/01/14/another-python-graph-one-wait-event/
 
 http://www.bobbydurrettdba.com/2016/03/29/python-dba-graphs-github-repository/
+
+Contact:
+
+bobby@bobbydurrettdba.com
+

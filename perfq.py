@@ -124,4 +124,24 @@ after.instance_number=sn.instance_number and
 order by after.snap_id
 """
         return q_string
+        
+class simplesqlstat():
+    def __init__(self,sql_id):
+        self.sql_id = sql_id
+        
+    def build_query(self):
+        q_string = """
+select 
+to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+ss.executions_delta,
+ELAPSED_TIME_DELTA/(executions_delta*1000) ELAPSED_AVG_MS
+from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
+where ss.sql_id = '""" 
+        q_string += self.sql_id
+        q_string += """'
+and ss.snap_id=sn.snap_id
+and executions_delta > 0
+and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
+order by ss.snap_id,ss.sql_id"""
+        return q_string
                          

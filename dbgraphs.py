@@ -122,9 +122,44 @@ def onewait():
     
     myplot.frequency_average(title,top_label,bottom_label,
                           date_time,num_events,avg_elapsed)
+                          
+def simplesqlstat():
+    # Get user input
+    
+    database=util.input_with_default('database','ORCL')
+    sql_id=util.input_with_default('SQL_ID','acrg0q0qtx3gr')
+    
+    # Use my db login credentials
+    
+    m = util.me()
+    user=m.my_oracle_username()
+    password=m.my_oracle_password()
+    
+    # Build and run query
+    
+    o = perfq.simplesqlstat(sql_id);
+    q = o.build_query()
+    
+    c = db.connection(user,password,database)
+    
+    r = c.run_return_flipped_results(q)
+    
+    # plot query
+        
+    title = "Sql_id "+sql_id+" on "+database+" database"
+    top_label = "Number of executions"
+    bottom_label = "Averaged Elapsed Milliseconds"
+    
+    date_time=r[0]
+    executions=r[1]
+    avg_elapsed=r[2]
+    
+    myplot.frequency_average(title,top_label,bottom_label,
+                          date_time,executions,avg_elapsed)
+
     
 parser = argparse.ArgumentParser(description='Create a database performance graph')
-parser.add_argument('reportname', choices=['ashcpu', 'onewait'], 
+parser.add_argument('reportname', choices=['ashcpu', 'onewait','simplesqlstat'], 
                    help='Name of report')
 
 args = parser.parse_args()
@@ -132,4 +167,6 @@ if args.reportname == 'ashcpu':
     ashcpu()
 elif args.reportname == 'onewait':
     onewait()
+elif args.reportname == 'simplesqlstat':
+    simplesqlstat()
 

@@ -3,7 +3,7 @@
 This is a python program that will generate graphs of various metrics that
 are helpful for Oracle database performance tuning.
 
-Right now it includes 2 graphs:
+Right now it includes 3 graphs:
 
 ashcpu - Shows cpu usage within an Oracle database
          by various parts of the application.

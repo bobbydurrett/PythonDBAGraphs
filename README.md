@@ -11,8 +11,8 @@ ashcpu - Shows cpu usage within an Oracle database
 onewait - Shows the average time for an Oracle wait
           event and the number of events per period.
           
-simplesqlstat - For one query, identified by a sql_id
-                show average elapsed versus executions.
+simplesqlstat - Show average elapsed versus executions
+                for one SQL statement.
           
 Command line help:
 
@@ -29,6 +29,8 @@ python dbgraphs.py onewait
 simplesqlstat:
 
 python dbgraphs.py simplesqlstat
+
+Requirements:
 
 This has only been tested on Windows 7 using 32-bit
 Canopy Express and the cx_Oracle package.

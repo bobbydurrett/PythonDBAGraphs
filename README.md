@@ -1,5 +1,31 @@
 # PythonDBAGraphs
 
+This is a python program that will generate graphs of various metrics that
+are helpful for Oracle database performance tuning.
+
+Right now it includes 2 graphs:
+
+ashcpu - Shows cpu usage within an Oracle database
+         by various parts of the application.
+
+onewait - Shows the average time for an Oracle wait
+          event and the number of events per period.
+          
+Command line help:
+
+python dbgraphs.py -h
+
+ashcpu:
+
+python dbgraphs.py ashcpu
+
+onewait:
+
+python dbgraphs.py onewait
+
+This has only been tested on Windows 7 using 32-bit
+Canopy Express and the cx_Oracle package.
+
 Related blog posts:
 
 http://www.bobbydurrettdba.com/2016/01/06/trying-python-and-pyplot-for-database-performance-graphs/

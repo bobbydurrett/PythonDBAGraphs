@@ -135,12 +135,12 @@ def frequency_average(title,top_label,bottom_label,
                    
 # cull date and time x ticks down to num_ticks = 30
 # so they fit on the screen
-    num_ticks=30
+    num_ticks=25
     times_per_tick = len(date_time)/num_ticks
     if times_per_tick < 1:
         times_per_tick = 1
     trimmed_date_time=[]
-    for i in range(1,len(date_time)):
+    for i in range(0,len(date_time)):
         if i%times_per_tick == 0:
            trimmed_date_time.append(date_time[i])
     xtick_locations=range(0,len(date_time),times_per_tick)
@@ -157,16 +157,18 @@ def frequency_average(title,top_label,bottom_label,
     plt.title(title)
     plt.ylabel(top_label)
     empty_label_list=[]
+    plt.minorticks_on()
     plt.xticks(xtick_locations,empty_label_list)
-    plt.grid()
+    plt.grid(which="major")
     red = 'r'
     plt.plot(num_events,red)
 # bottom half of the graph plot_number 2
     plot_number = 2   
     plt.subplot(nrows,ncols,plot_number)
     plt.ylabel(bottom_label)
-    plt.xticks(xtick_locations,trimmed_date_time,rotation=45)
-    plt.grid()
+    plt.minorticks_on()
+    plt.xticks(xtick_locations,trimmed_date_time,rotation=90)
+    plt.grid(which="major")
     green='g'
     plt.plot(avg_elapsed,green)
     plt.show()

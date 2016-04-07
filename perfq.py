@@ -105,7 +105,7 @@ class onewait():
         
     def build_query(self):
         q_string = """
-select to_char(sn.END_INTERVAL_TIME,'YYYY-MM-DD HH24:MI') DATE_TIME,
+select to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
 (after.total_waits-before.total_waits) NUMBER_OF_WAITS,
 (after.time_waited_micro-before.time_waited_micro)/(after.total_waits-before.total_waits) AVG_MICROSECONDS
 from DBA_HIST_SYSTEM_EVENT before, DBA_HIST_SYSTEM_EVENT after,DBA_HIST_SNAPSHOT sn

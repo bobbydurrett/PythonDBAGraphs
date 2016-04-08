@@ -157,9 +157,41 @@ def simplesqlstat():
     myplot.frequency_average(title,top_label,bottom_label,
                           date_time,executions,avg_elapsed)
 
+def allsql():
+    # Get user input
+    
+    database=util.input_with_default('database','ORCL')
+    
+    # Use my db login credentials
+    
+    m = util.me()
+    user=m.my_oracle_username()
+    password=m.my_oracle_password()
+    
+    # Build and run query
+    
+    q = perfq.allsql();
+    
+    c = db.connection(user,password,database)
+    
+    r = c.run_return_flipped_results(q)
+    
+    # plot query
+        
+    title = "All SQL statements on "+database+" database"
+    top_label = "Number of executions"
+    bottom_label = "Averaged Elapsed Milliseconds"
+    
+    date_time=r[0]
+    executions=r[1]
+    avg_elapsed=r[2]
+    
+    myplot.frequency_average(title,top_label,bottom_label,
+                          date_time,executions,avg_elapsed)
+
     
 parser = argparse.ArgumentParser(description='Create a database performance graph')
-parser.add_argument('reportname', choices=['ashcpu', 'onewait','simplesqlstat'], 
+parser.add_argument('reportname', choices=['ashcpu', 'onewait','simplesqlstat','allsql'], 
                    help='Name of report')
 
 args = parser.parse_args()
@@ -169,4 +201,6 @@ elif args.reportname == 'onewait':
     onewait()
 elif args.reportname == 'simplesqlstat':
     simplesqlstat()
+elif args.reportname == 'allsql':
+    allsql()
 

@@ -145,3 +145,16 @@ and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
 order by ss.snap_id,ss.sql_id"""
         return q_string
                          
+def allsql():
+    q_string = """select 
+to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+sum(ss.executions_delta) TOTAL_EXECUTIONS,
+sum(ELAPSED_TIME_DELTA)/(sum(executions_delta)*1000) ELAPSED_AVG_MS
+from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
+where 
+ss.snap_id=sn.snap_id
+and executions_delta > 0
+and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
+group by sn.END_INTERVAL_TIME
+order by sn.END_INTERVAL_TIME"""
+    return q_string

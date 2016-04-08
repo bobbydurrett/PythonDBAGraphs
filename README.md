@@ -3,7 +3,7 @@
 This is a Python program that displays graphs that
 are helpful for Oracle database performance tuning.
 
-Right now it includes 3 graphs:
+Right now it includes 4 graphs:
 
 ashcpu - Shows cpu usage within an Oracle database
          by various parts of the application.
@@ -13,6 +13,9 @@ onewait - Shows the average time for an Oracle wait
           
 simplesqlstat - Show average elapsed versus executions
                 for one SQL statement.
+
+allsql - Show average elapsed versus executions
+         for all SQL statements.
           
 Command line help:
 
@@ -29,6 +32,10 @@ python dbgraphs.py onewait
 simplesqlstat:
 
 python dbgraphs.py simplesqlstat
+
+allsql:
+
+python dbgraphs.py allsql
 
 Requirements:
 

@@ -1,6 +1,6 @@
 # PythonDBAGraphs
 
-This is a python program that will generate graphs of various metrics that
+This is a Python program that displays graphs that
 are helpful for Oracle database performance tuning.
 
 Right now it includes 3 graphs:
@@ -34,6 +34,10 @@ Requirements:
 
 This has only been tested on Windows 7 using 32-bit
 Canopy Express and the cx_Oracle package.
+
+https://www.enthought.com/canopy-express/
+
+https://pypi.python.org/pypi/cx_Oracle/5.2.1
 
 Related blog posts:
 

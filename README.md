@@ -46,6 +46,17 @@ https://www.enthought.com/canopy-express/
 
 https://pypi.python.org/pypi/cx_Oracle/5.2.1
 
+Configuration:
+
+The program uses text files stored in a particular directory
+as configuration files. On my laptop they are stored in c:\mypython.
+You can change this directory for your installation my modifying 
+the value of configuration_file_directory in util.py.
+
+The program also puts generated graph files in c:\temp. This 
+target directory can be changed by modifying the value set 
+for graph_export_directory in myplot.py.
+
 Related blog posts:
 
 http://www.bobbydurrettdba.com/2016/01/06/trying-python-and-pyplot-for-database-performance-graphs/

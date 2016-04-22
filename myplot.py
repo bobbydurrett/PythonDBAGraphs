@@ -24,6 +24,15 @@ myplot.py
 My plotting routines
 
 """
+
+"""
+
+Directory for the output of graphs. Modify graph_export_directory if you
+want a different target directory for graphs that are written to disk.
+
+"""
+
+graph_export_directory = 'C:\\temp\\'
         
 import numpy as np
 import matplotlib.pyplot as plt
@@ -104,7 +113,7 @@ def plot_cpu_by_day(database,day,results,column_names):
     
     F = plt.gcf()
     F.set_size_inches((13.,9.))
-    graphfile = 'C:\\temp\\'+day.lower()+'.png' 
+    graphfile = graph_export_directory+day.lower()+'.png' 
     plt.savefig(graphfile,dpi = (100))
     print "Graph is "+graphfile
     

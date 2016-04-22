@@ -37,7 +37,7 @@ def ashcpu():
     """
     Generates a graph that shows cpu usage within an Oracle database
     by various parts of the application. The graph is configured by lines in 
-    the text file C:\mypython\ashcpufile.txt
+    the text file ashcpufile.txt.
     
     The first line of the file is the Oracle database name.
     
@@ -67,7 +67,7 @@ def ashcpu():
     
     c = perfq.cpubymachine(day,8,17)
     
-    MACHINE_FILE = "C:\\mypython\\ashcpufile.txt"
+    MACHINE_FILE = util.configuration_file_directory+"ashcpufile.txt"
     inFile = open(MACHINE_FILE, 'r', 0)
     lines = inFile.read().splitlines()
     database=lines.pop(0)

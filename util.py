@@ -25,6 +25,17 @@ Utility functions and classes
 
 """
 
+"""  
+
+Edit this next line with the directory that you will keep
+files related to configuration of your graphs such as the
+file that contains your oracle user and password.
+
+"""
+
+configuration_file_directory = "C:\\mypython\\"
+
+
 def input_with_default(prompt,default_value):
     entered_value = raw_input('Enter '+prompt+' or press enter for default ('+default_value+'): ')
     if entered_value == "":
@@ -35,7 +46,7 @@ def input_with_default(prompt,default_value):
 class me:
     def __init__(self):
         """ read my oracle user and password from file """
-        USER_FILE = "C:\mypython\myoracleuser.txt"
+        USER_FILE = configuration_file_directory+"myoracleuser.txt"
         inFile = open(USER_FILE, 'r', 0)
         l = inFile.read().splitlines()
         self.username = l[0]
@@ -49,3 +60,4 @@ class me:
     def my_oracle_password(self):
         """ return my oracle password """
         return self.password
+

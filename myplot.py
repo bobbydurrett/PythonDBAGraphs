@@ -33,6 +33,20 @@ want a different target directory for graphs that are written to disk.
 """
 
 graph_export_directory = 'C:\\temp\\'
+
+"""
+
+Dimensions for a graph. Corresponds to 1920x1080.
+A change here to affect all graphs. 
+
+graph_dimensions is supposed to be in inches and
+graph_dpi is dots per inch. Chose these to multiply
+to 1920x1080 for HD monitor.
+
+"""
+
+graph_dimensions=(19.2,10.8)
+graph_dpi=100    
         
 import numpy as np
 import matplotlib.pyplot as plt
@@ -112,10 +126,11 @@ def plot_cpu_by_day(database,day,results,column_names):
     plt.yticks(locs,new_labels)
     
     F = plt.gcf()
-    F.set_size_inches((13.,9.))
+    F.set_size_inches(graph_dimensions)
     graphfile = graph_export_directory+day.lower()+'.png' 
-    plt.savefig(graphfile,dpi = (100))
+    plt.savefig(graphfile,dpi = (graph_dpi))
     print "Graph is "+graphfile
+    plt.close()
     
     return
   
@@ -142,7 +157,7 @@ def frequency_average(title,top_label,bottom_label,
     
     """
                    
-# cull date and time x ticks down to num_ticks = 30
+# cull date and time x ticks down to num_ticks ticks
 # so they fit on the screen
     num_ticks=25
     times_per_tick = len(date_time)/num_ticks
@@ -155,8 +170,6 @@ def frequency_average(title,top_label,bottom_label,
     xtick_locations=range(0,len(date_time),times_per_tick)
            
 # do the plot
-    graph_dimensions=(20,13)
-    graph_dpi=75    
     plt.figure(title,graph_dimensions,graph_dpi)
 # top half of the graph plot_number 1
     nrows = 2
@@ -180,6 +193,17 @@ def frequency_average(title,top_label,bottom_label,
     plt.grid(which="major")
     green='g'
     plt.plot(avg_elapsed,green)
+    
+# subplots_adjust settings
+    vleft  = 0.07  # the left side of the subplots of the figure
+    vright = 0.97    # the right side of the subplots of the figure
+    vbottom = 0.15   # the bottom of the subplots of the figure
+    vtop = 0.95      # the top of the subplots of the figure
+    vwspace = 0.0   # the amount of width reserved for blank space between subplots
+    vhspace = 0.08   # the amount of height reserved for white space between subplots
+
+    plt.subplots_adjust(left=vleft,right=vright,bottom=vbottom,top=vtop,wspace=vwspace,hspace=vhspace)
+    
     plt.show()
     
     return

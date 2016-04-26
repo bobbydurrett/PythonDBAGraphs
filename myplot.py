@@ -46,7 +46,12 @@ to 1920x1080 for HD monitor.
 """
 
 graph_dimensions=(19.2,10.8)
-graph_dpi=100    
+graph_dpi=100
+
+# destination is where the graph will go - screen or file
+# set in dbgraphs.py
+
+destination='screen'
         
 import numpy as np
 import matplotlib.pyplot as plt
@@ -72,6 +77,15 @@ def nonetozero(value):
         return 0.0
     else:
         return value
+
+def fileorscreen(filename):
+    if destination == 'file':
+        graphfile = graph_export_directory+filename 
+        plt.savefig(graphfile,dpi = (graph_dpi))
+        print "Graph is "+graphfile
+        plt.close()
+    elif destination == 'screen':
+        plt.show()
     
 def plot_cpu_by_day(database,day,results,column_names):
     """
@@ -127,10 +141,7 @@ def plot_cpu_by_day(database,day,results,column_names):
     
     F = plt.gcf()
     F.set_size_inches(graph_dimensions)
-    graphfile = graph_export_directory+day.lower()+'.png' 
-    plt.savefig(graphfile,dpi = (graph_dpi))
-    print "Graph is "+graphfile
-    plt.close()
+    fileorscreen(day.lower()+'.png')
     
     return
   
@@ -156,7 +167,7 @@ def frequency_average(title,top_label,bottom_label,
         avg_elapsed - average elapsed time - list
     
     """
-                   
+
 # cull date and time x ticks down to num_ticks ticks
 # so they fit on the screen
     num_ticks=25
@@ -204,6 +215,6 @@ def frequency_average(title,top_label,bottom_label,
 
     plt.subplots_adjust(left=vleft,right=vright,bottom=vbottom,top=vtop,wspace=vwspace,hspace=vhspace)
     
-    plt.show()
+    fileorscreen(title+'.png')
     
     return

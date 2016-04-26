@@ -21,21 +21,24 @@ Command line help:
 
 python dbgraphs.py -h
 
-ashcpu:
+usage: dbgraphs.py [-h] {ashcpu,onewait,simplesqlstat,allsql} {file,screen}
 
-python dbgraphs.py ashcpu
+Create a database performance graph
 
-onewait:
+positional arguments:
 
-python dbgraphs.py onewait
+  {ashcpu,onewait,simplesqlstat,allsql} Name of report
+  
+  {file,screen} Where to send the graph
 
-simplesqlstat:
+optional arguments:
+  -h, --help            show this help message and exit
 
-python dbgraphs.py simplesqlstat
+Example:
 
-allsql:
+python dbgraphs.py onewait screen
 
-python dbgraphs.py allsql
+This creates the onewait graph and sends the output to the screen.
 
 Requirements:
 

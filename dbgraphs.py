@@ -193,8 +193,11 @@ def allsql():
 parser = argparse.ArgumentParser(description='Create a database performance graph')
 parser.add_argument('reportname', choices=['ashcpu', 'onewait','simplesqlstat','allsql'], 
                    help='Name of report')
+parser.add_argument('destination', choices=['file', 'screen'], 
+                   help='Where to send the graph')
 
 args = parser.parse_args()
+myplot.destination = args.destination
 if args.reportname == 'ashcpu':
     ashcpu()
 elif args.reportname == 'onewait':

@@ -141,6 +141,7 @@ def plot_cpu_by_day(database,day,results,column_names):
     
     F = plt.gcf()
     F.set_size_inches(graph_dimensions)
+    plt.autoscale(tight=True)
     fileorscreen(day.lower()+'.png')
     
     return

@@ -1,0 +1,5 @@
+# The next three lines after these comments are the directory
+# paths for the configuration, password, and output directories.
+C:\mypython\
+C:\mypython\
+C:\temp\

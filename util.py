@@ -66,7 +66,9 @@ def get_directories():
     Get directory names from a file that is in the same
     directory as the source code.
     """
-    source_dir=(util.__file__)[:-7]
+    util_py = (util.__file__)
+    file_start = util_py.find('util.py')
+    source_dir = util_py[0:file_start]
     lines = read_config_file(source_dir,util.directories_file)
     util.config_dir = lines[2]
     util.password_dir= lines[3]

@@ -51,14 +51,22 @@ https://pypi.python.org/pypi/cx_Oracle/5.2.1
 
 Configuration:
 
-The program uses text files stored in a particular directory
-as configuration files. On my laptop they are stored in c:\mypython.
-You can change this directory for your installation my modifying 
-the value of configuration_file_directory in util.py.
+The program uses certain directories. The paths to these directories
+is stored in the file directories.txt which is kept in the same 
+location as the util.py script. The directories are the configuration, 
+password, and output directories.
 
-The program also puts generated graph files in c:\temp. This 
-target directory can be changed by modifying the value set 
-for graph_export_directory in myplot.py.
+The configuration directory contains the file userandfilenames.txt
+which has the Oracle user name and the file names for the ASH CPU
+report configuration and the name of the password file.
+
+The password directory contains the password file. It has lines in this 
+format:
+
+Database name:user name:password
+
+The output directory is where image files are written if you choose
+"file" as the destination for the graph.
 
 Related blog posts:
 

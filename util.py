@@ -21,43 +21,104 @@ bobby@bobbydurrettdba.com
 
 util.py
 
-Utility functions and classes
+Utility functions and global variables
 
 """
 
-"""  
+import util
 
-Edit this next line with the directory that you will keep
-files related to configuration of your graphs such as the
-file that contains your oracle user and password.
+""" 
+
+Global variables that hold configuration information such as directory
+names, file names, and Oracle user name and password.
 
 """
 
-configuration_file_directory = "C:\\mypython\\"
+# directories
 
+config_dir = None
+password_dir = None
+output_dir = None
 
+# files
+
+ashcpu_file = None
+password_file = None
+
+# fixed file names
+
+directories_file = 'directories.txt'
+userandfiles_file = 'userandfilenames.txt'
+
+# Oracle user
+
+my_oracle_user = None
+
+def read_config_file(directory,file_name):
+    CFG_FILE = directory+file_name
+    inFile = open(CFG_FILE, 'r', 0)
+    lines = inFile.read().splitlines()
+    inFile.close()
+    return lines
+
+def get_directories():
+    """ 
+    Get directory names from a file that is in the same
+    directory as the source code.
+    """
+    source_dir=(util.__file__)[:-7]
+    lines = read_config_file(source_dir,util.directories_file)
+    util.config_dir = lines[2]
+    util.password_dir= lines[3]
+    util.output_dir= lines[4]
+
+def get_user_and_files():
+    """ 
+    Get Oracle user name and file names.
+    """
+    lines = read_config_file(util.config_dir,util.userandfiles_file)
+    util.my_oracle_user = lines[4]
+    util.password_file = lines[5]
+    util.ashcpu_file = lines[6]
+    
+def load_configuration():
+    """ 
+    Called by the main script to get the directory and file names. Also 
+    gets the name of the Oracle user. 
+    """
+    get_directories()
+    get_user_and_files()
+
+def get_oracle_password(database):
+        """
+        Return my oracle password
+        
+        This assumes that the password file has entries of the format
+        
+        database:username:password
+        
+        Also, if database is ALLDBS, then it assumes that all databases
+        have the same password for the given user.
+        
+        """
+        lines = read_config_file(util.password_dir,util.password_file)
+        # look for specific database first
+        for oneline in lines:
+            if oneline[0] <> '#':
+                fields = oneline.split(':')
+                if fields[0].upper() == database.upper() and fields[1].upper() == util.my_oracle_user.upper():
+                    return fields[2]
+        # look for ALLDBS indicating same password all databases
+        for oneline in lines:
+            if oneline[0] <> '#':
+                fields = oneline.split(':')
+                if fields[0].upper() == 'ALLDBS' and fields[1].upper() == util.my_oracle_user.upper():
+                    return fields[2]
+    
 def input_with_default(prompt,default_value):
     entered_value = raw_input('Enter '+prompt+' or press enter for default ('+default_value+'): ')
     if entered_value == "":
         return default_value
     else:
         return entered_value
-
-class me:
-    def __init__(self):
-        """ read my oracle user and password from file """
-        USER_FILE = configuration_file_directory+"myoracleuser.txt"
-        inFile = open(USER_FILE, 'r', 0)
-        l = inFile.read().splitlines()
-        self.username = l[0]
-        self.password = l[1]
-        return
-
-    def my_oracle_username(self):
-        """ return my oracle username """
-        return self.username
-    
-    def my_oracle_password(self):
-        """ return my oracle password """
-        return self.password
-
+   

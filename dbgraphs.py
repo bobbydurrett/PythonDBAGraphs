@@ -32,6 +32,14 @@ import perfq
 import myplot
 import util
 
+"""
+
+Load the directory names, file names, and Oracle user name.
+
+"""
+
+util.load_configuration()
+
 def ashcpu():
 
     """
@@ -60,16 +68,11 @@ def ashcpu():
 
     day=raw_input('Enter day of week: ')
     
-    
-    m = util.me()
-    user=m.my_oracle_username()
-    password=m.my_oracle_password()
-    
+    user=util.my_oracle_user
+     
     c = perfq.cpubymachine(day,8,17)
     
-    MACHINE_FILE = util.configuration_file_directory+"ashcpufile.txt"
-    inFile = open(MACHINE_FILE, 'r', 0)
-    lines = inFile.read().splitlines()
+    lines = util.read_config_file(util.config_dir,util.ashcpu_file)
     database=lines.pop(0)
     for l in lines:
         args = l.split()
@@ -77,6 +80,8 @@ def ashcpu():
     
     querytext = c.build_query()
     
+    user=util.my_oracle_user
+    password=util.get_oracle_password(database)
     d = db.connection(user,password,database)
     h = saveawr.day_history(d,day,'ASHCPUBYMACHINE',querytext)
     
@@ -97,9 +102,8 @@ def onewait():
     
     # Use my db login credentials
     
-    m = util.me()
-    user=m.my_oracle_username()
-    password=m.my_oracle_password()
+    user=util.my_oracle_user
+    password=util.get_oracle_password(database)
     
     # Build and run query
     
@@ -131,9 +135,8 @@ def simplesqlstat():
     
     # Use my db login credentials
     
-    m = util.me()
-    user=m.my_oracle_username()
-    password=m.my_oracle_password()
+    user=util.my_oracle_user
+    password=util.get_oracle_password(database)
     
     # Build and run query
     
@@ -164,9 +167,8 @@ def allsql():
     
     # Use my db login credentials
     
-    m = util.me()
-    user=m.my_oracle_username()
-    password=m.my_oracle_password()
+    user=util.my_oracle_user
+    password=util.get_oracle_password(database)
     
     # Build and run query
     

@@ -27,15 +27,6 @@ My plotting routines
 
 """
 
-Directory for the output of graphs. Modify graph_export_directory if you
-want a different target directory for graphs that are written to disk.
-
-"""
-
-graph_export_directory = 'C:\\temp\\'
-
-"""
-
 Dimensions for a graph. Corresponds to 1920x1080.
 A change here to affect all graphs. 
 
@@ -57,6 +48,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cmx
 import matplotlib.colors as colors
+import util
 
 # from http://stackoverflow.com/questions/14720331/how-to-generate-random-colors-in-matplotlib
 
@@ -80,7 +72,7 @@ def nonetozero(value):
 
 def fileorscreen(filename):
     if destination == 'file':
-        graphfile = graph_export_directory+filename 
+        graphfile = util.output_dir+filename 
         plt.savefig(graphfile,dpi = (graph_dpi))
         print "Graph is "+graphfile
         plt.close()

@@ -76,7 +76,8 @@ def ashcpu():
     database=lines.pop(0)
     for l in lines:
         args = l.split()
-        c.add_machine(args[0],args[1])
+        if len(args) == 2:
+            c.add_machine(args[0],args[1])
     
     querytext = c.build_query()
     

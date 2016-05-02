@@ -75,7 +75,7 @@ def fileorscreen(filename):
         graphfile = util.output_dir+filename 
         plt.savefig(graphfile,dpi = (graph_dpi))
         print "Graph is "+graphfile
-        plt.close()
+        plt.clf()
     elif destination == 'screen':
         plt.show()
     

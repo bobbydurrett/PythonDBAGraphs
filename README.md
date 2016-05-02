@@ -107,9 +107,7 @@ to find the rc file.
 
 s.py:
 
-from pylab import *
-plot([1,2,3])
-show()
+https://gist.github.com/bobbydurrett/a65c9c457f155a0ed38a9643b05ce8f5#file-s-py
 
 6 Build numpy from source and install.
 

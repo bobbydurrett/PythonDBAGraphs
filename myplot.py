@@ -83,7 +83,11 @@ def plot_cpu_by_day(database,day,results,column_names):
     """
     Plots database cpu history for a day.
     """
-        
+       
+    if len(results) == 0:
+        print "No results to graph"
+        return
+ 
     number_of_bars = len(results)
     xvalues = np.arange(number_of_bars)    # the x locations for the groups
     width = 0.35       # the width of the bars compared with x index

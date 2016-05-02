@@ -26,6 +26,7 @@ Utility functions and global variables
 """
 
 import util
+import sys
 
 """ 
 
@@ -54,9 +55,32 @@ userandfiles_file = 'userandfilenames.txt'
 
 my_oracle_user = None
 
+def get_source_dir():
+    util_py = (util.__file__)
+    file_start = util_py.find('util.py')
+    source_dir = util_py[0:file_start]
+    return source_dir
+
 def read_config_file(directory,file_name):
     CFG_FILE = directory+file_name
-    inFile = open(CFG_FILE, 'r', 0)
+    try:
+        inFile = open(CFG_FILE, 'r', 0)
+    except IOError as e:
+        if e.strerror == 'No such file or directory':
+            source_dir = get_source_dir()
+            print "File:"
+            print CFG_FILE
+            print "not found."
+            print ""
+            print "Please copy "+file_name+" from"
+            print source_dir+"configfiletemplates"
+            print "to"
+            print directory
+            print "and edit with your information."
+            sys.exit()
+        else:
+            raise e
+        
     lines = inFile.read().splitlines()
     inFile.close()
     return lines
@@ -66,9 +90,8 @@ def get_directories():
     Get directory names from a file that is in the same
     directory as the source code.
     """
-    util_py = (util.__file__)
-    file_start = util_py.find('util.py')
-    source_dir = util_py[0:file_start]
+    
+    source_dir = get_source_dir()
     lines = read_config_file(source_dir,util.directories_file)
     util.config_dir = lines[2]
     util.password_dir= lines[3]

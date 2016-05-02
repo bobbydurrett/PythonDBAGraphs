@@ -42,7 +42,7 @@ This creates the onewait graph and sends the output to the screen.
 
 Requirements:
 
-This has only been tested on Windows 7 using 32-bit
+This has been primarily tested on Windows 7 using 32-bit
 Canopy Express and the cx_Oracle package.
 
 https://www.enthought.com/canopy-express/
@@ -79,4 +79,44 @@ http://www.bobbydurrettdba.com/2016/03/29/python-dba-graphs-github-repository/
 Contact:
 
 bobby@bobbydurrettdba.com
+
+Linux configuration:
+
+Recently tested this on Linux virtual machine following this high level outline:
+
+Here are the steps to use PythonDBAGraphs on Linux. Tested on Oracle Enterprise
+Linux, a variant of Red Hat.
+
+1 Install Oracle linux 6 as software development workstation.
+Run yum update to get current.
+
+2 Install Oracle 11.2.0.4 client using database server yum package. Setup the 
+needed Oracle directories. Setup tnsnames.ora entry for test database
+and test connection with sqlplus.
+
+3 Use yum to install tcl* and tk*
+
+4 Build python 2.7.11 from source and install.
+
+5 Build matplotlib from source and install.
+Set backend to tkagg in matplotlibrc. Use
+
+python s.py --verbose-helpful 
+
+to find the rc file.
+
+s.py:
+
+from pylab import *
+plot([1,2,3])
+show()
+
+6 Build numpy from source and install.
+
+7 Build cx_Oracle from source and install.
+
+8 Clone PythonDBAGraphs repository using git.
+
+9 Test application. Setup configuration files
+to use SYSTEM user and Linux file paths.
 

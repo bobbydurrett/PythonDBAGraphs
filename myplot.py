@@ -75,6 +75,7 @@ def fileorscreen(filename):
         graphfile = util.output_dir+filename 
         plt.savefig(graphfile,dpi = (graph_dpi))
         print "Graph is "+graphfile
+        x = raw_input("Hit enter to continue")
         plt.clf()
     elif destination == 'screen':
         plt.show()
@@ -97,36 +98,63 @@ def plot_cpu_by_day(database,day,results,column_names):
     number_of_columns = len(column_names)
 
     cmp = get_cmap(number_of_columns)
-
+    
+    # Each level of the bar graph is a plot which is a member of the list
+    # plots. Each plot represents a specific class of machines. Each class
+    # is a different column in the results returned by the query. So there
+    # is one bar plot for each column of the results except the first one 
+    # which is just the date.
     plots = []
     for c in range(1,number_of_columns):
+        # yvalues is the top of the bar for a given color
+        # bottomvals is the bottom of the bar which is stacked
+        # on other bars if not the first one.
         yvalues=[]
         bottomvals = []
+        # loop through all of the rows in the result set
         for r in results:
+            # Use the value for the current column as the top of the bar
             yvalues.append(100.0*nonetozero(r[c]))
+            # Calculate the value for the bottom of the bar in btemp
+            # Add up previous columns for this row of the result set
             btemp=0.0
             for b in range(1,c):
                 btemp += 100.0*nonetozero(r[b])
             bottomvals.append(btemp)
+        # draw the next color in the stack of bars and save on the plots list
         p = plt.bar(xvalues, yvalues, width,color=cmp(c-1),bottom=bottomvals)
         plots.append(p)
 
     plt.ylabel('CPU % Utilization')
     plt.title(database.upper()+' CPU Working Hours '+day.capitalize()+'s')
 
+    # xnames is a list of dates based on the first column in the result set
     xnames = []
     for row in results:
         xnames.append(row[0])
 
+    # puts the tick marks and dates as labels under the bars
     plt.xticks(xvalues + width/2., xnames,rotation=45)
 
+    # The next section of code builds the legend for each bar of 
+    # a given color. The column names are the legend. These represent
+    # a meaningful label for a group of machine names of client machines
+    # that are accessing the database. For example, one label could be
+    # WEBFARM to represent database activity from the web servers.
     legend_columns = []
     for c in range(1,len(column_names)):
         legend_columns.append(column_names[c].replace("'",""))
 
     plt.legend(plots, legend_columns,loc='upper left')
     
+    # put up a grid with a y axis
+    
     plt.grid(axis='y')
+    
+    # this code takes the default labels for the y tick marks
+    # and adds a percent sign (%). The values reprecent percent
+    # cpu utilization but without this code there would be no
+    # % after the number
     
     locs,labels = plt.yticks()
     new_labels = []
@@ -134,6 +162,9 @@ def plot_cpu_by_day(database,day,results,column_names):
         new_labels.append(str(int(l))+'%')
         
     plt.yticks(locs,new_labels)
+    
+    # finally set the size of the graph and produce the image either
+    # in a file or on the screen
     
     F = plt.gcf()
     F.set_size_inches(graph_dimensions)

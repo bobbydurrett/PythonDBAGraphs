@@ -92,8 +92,6 @@ def ashcpu():
            
     myplot.plot_cpu_by_day(database,day,results,column_names)
     
-    x = raw_input("Hit enter to continue")
-    
 def onewait():
     # Get user input
     

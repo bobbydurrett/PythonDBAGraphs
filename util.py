@@ -115,30 +115,30 @@ def load_configuration():
     get_user_and_files()
 
 def get_oracle_password(database):
-        """
-        Return my oracle password
-        
-        This assumes that the password file has entries of the format
-        
-        database:username:password
-        
-        Also, if database is ALLDBS, then it assumes that all databases
-        have the same password for the given user.
-        
-        """
-        lines = read_config_file(util.password_dir,util.password_file)
-        # look for specific database first
-        for oneline in lines:
-            if oneline[0] <> '#':
-                fields = oneline.split(':')
-                if fields[0].upper() == database.upper() and fields[1].upper() == util.my_oracle_user.upper():
-                    return fields[2]
-        # look for ALLDBS indicating same password all databases
-        for oneline in lines:
-            if oneline[0] <> '#':
-                fields = oneline.split(':')
-                if fields[0].upper() == 'ALLDBS' and fields[1].upper() == util.my_oracle_user.upper():
-                    return fields[2]
+    """
+    Return my oracle password
+    
+    This assumes that the password file has entries of the format
+    
+    database:username:password
+    
+    Also, if database is ALLDBS, then it assumes that all databases
+    have the same password for the given user.
+    
+    """
+    lines = read_config_file(util.password_dir,util.password_file)
+    # look for specific database first
+    for oneline in lines:
+        if oneline[0] <> '#':
+            fields = oneline.split(':')
+            if fields[0].upper() == database.upper() and fields[1].upper() == util.my_oracle_user.upper():
+                return fields[2]
+    # look for ALLDBS indicating same password all databases
+    for oneline in lines:
+        if oneline[0] <> '#':
+            fields = oneline.split(':')
+            if fields[0].upper() == 'ALLDBS' and fields[1].upper() == util.my_oracle_user.upper():
+                return fields[2]
     
 def input_with_default(prompt,default_value):
     entered_value = raw_input('Enter '+prompt+' or press enter for default ('+default_value+'): ')

@@ -74,9 +74,9 @@ def fileorscreen(filename):
     if destination == 'file':
         graphfile = util.output_dir+filename 
         plt.savefig(graphfile,dpi = (graph_dpi))
+        plt.close()
         print "Graph is "+graphfile
         x = raw_input("Hit enter to continue")
-        plt.clf()
     elif destination == 'screen':
         plt.show()
     
@@ -88,6 +88,12 @@ def plot_cpu_by_day(database,day,results,column_names):
     if len(results) == 0:
         print "No results to graph"
         return
+    
+    title = database.upper()+' CPU Working Hours '+day.capitalize()+'s'
+    
+# set the screen title, size, density
+    
+    plt.figure(title,graph_dimensions,graph_dpi)
  
     number_of_bars = len(results)
     xvalues = np.arange(number_of_bars)    # the x locations for the groups
@@ -126,7 +132,7 @@ def plot_cpu_by_day(database,day,results,column_names):
         plots.append(p)
 
     plt.ylabel('CPU % Utilization')
-    plt.title(database.upper()+' CPU Working Hours '+day.capitalize()+'s')
+    plt.title(title)
 
     # xnames is a list of dates based on the first column in the result set
     xnames = []
@@ -163,11 +169,8 @@ def plot_cpu_by_day(database,day,results,column_names):
         
     plt.yticks(locs,new_labels)
     
-    # finally set the size of the graph and produce the image either
-    # in a file or on the screen
+    # Produce the image
     
-    F = plt.gcf()
-    F.set_size_inches(graph_dimensions)
     plt.autoscale(tight=True)
     fileorscreen(day.lower()+'.png')
     
@@ -195,6 +198,10 @@ def frequency_average(title,top_label,bottom_label,
         avg_elapsed - average elapsed time - list
     
     """
+    
+# set the screen title, size, density
+    
+    plt.figure(title,graph_dimensions,graph_dpi)
 
 # cull date and time x ticks down to num_ticks ticks
 # so they fit on the screen
@@ -209,7 +216,6 @@ def frequency_average(title,top_label,bottom_label,
     xtick_locations=range(0,len(date_time),times_per_tick)
            
 # do the plot
-    plt.figure(title,graph_dimensions,graph_dpi)
 # top half of the graph plot_number 1
     nrows = 2
     ncols = 1

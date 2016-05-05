@@ -106,8 +106,7 @@ def onewait():
     
     # Build and run query
     
-    o = perfq.onewait(wait_event,min_waits);
-    q = o.build_query()
+    q = perfq.onewait(wait_event,min_waits);
     
     c = db.connection(user,password,database)
     
@@ -139,8 +138,7 @@ def simplesqlstat():
     
     # Build and run query
     
-    o = perfq.simplesqlstat(sql_id);
-    q = o.build_query()
+    q = perfq.simplesqlstat(sql_id);
     
     c = db.connection(user,password,database)
     

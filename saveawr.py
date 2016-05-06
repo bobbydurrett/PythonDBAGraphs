@@ -81,8 +81,26 @@ class day_history:
             self.db_connection.run_return_no_results(insert_string)
             self.db_connection.commit()
             
-        query_string ='select * from '+self.perm_table_name+' order by '
+        """
+        Make final select follow this pattern:
+            
+        select * from     
+            (select * from 
+                (select * from MONDAYASHCPUBYMACHINE_PERM order by MONDAY_DATE desc) 
+            where rownum < 41)
+        order by MONDAY_DATE;
+        
+        This just shows the last 40 rows.
+        
+        """
+        query_string="""select * from     
+            (select * from 
+                (select * from """    
+        query_string +=self.perm_table_name+' order by '
         query_string +=day_column
+        query_string +=""" desc) 
+            where rownum < 41)
+        order by """+day_column
                     
         return self.db_connection.run_return_all_results(query_string)
                         

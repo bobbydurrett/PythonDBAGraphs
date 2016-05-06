@@ -27,8 +27,30 @@ Code relating to saving awr history
 
 import db
 
-# day_history expects the query to have a column named
-# MONDAY_DATE, TUESDAY_DATE, etc.
+"""
+
+day_history expects the query to have a column named
+MONDAY_DATE, TUESDAY_DATE, etc. See comments before perfq.cpubymachine
+for example of query that would be passed to day_history's init function.
+
+day_history uses two tables per week day with this naming standard:
+    
+MONDAYASHCPUBYMACHINE_PERM
+MONDAYASHCPUBYMACHINE_TEMP
+
+In this example day is MONDAY and queryname is ASHCPUBYMACHINE.
+
+The _TEMP table saves the output of the query. The query retrieves
+the given day's AWR information.
+
+The _PERM table saves this information long term. So, if your site keeps
+the 7 days of AWR history the _TEMP table will have 7 days of information
+but _PERM will have history as far back as the first run of the query.
+
+It is intended that the query be run daily to monitor performance and that
+_PERM will grow and have entries for every day.
+
+"""
 
 class day_history:
     def __init__(self,db_connection,day,queryname,query):
@@ -61,9 +83,11 @@ class day_history:
         # to permanent table
                
         if not perm_exists:
+            # populate new perm table with results of query
             create_string = 'create table '+self.perm_table_name+' as '+self.query
             self.db_connection.run_return_no_results(create_string)
         else:
+            # create empty temp table and load with results of query
             if temp_exists:
                 drop_string = 'drop table '+self.temp_table_name
                 self.db_connection.run_return_no_results(drop_string)
@@ -71,11 +95,14 @@ class day_history:
             create_string = 'create table '+self.temp_table_name+' as '+self.query
             self.db_connection.run_return_no_results(create_string)
             
+            # delete records in perm that are in temp to avoid 
+            # inserting duplicates
             delete_string = 'delete from '+self.perm_table_name
             delete_string += ' where '+day_column+' in (select '
             delete_string += day_column+' from '+self.temp_table_name+')'
             self.db_connection.run_return_no_results(delete_string)
            
+            # insert temp rows into perm table
             insert_string = 'insert into '+self.perm_table_name
             insert_string += ' select * from '+self.temp_table_name
             self.db_connection.run_return_no_results(insert_string)
@@ -91,6 +118,10 @@ class day_history:
         order by MONDAY_DATE;
         
         This just shows the last 40 rows.
+        
+        This final select statement queries the perm table returning
+        results in the same format as the query but including the 
+        stored older values from earlier runs.
         
         """
         query_string="""select * from     

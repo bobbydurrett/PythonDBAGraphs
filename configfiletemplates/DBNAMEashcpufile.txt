@@ -1,4 +1,3 @@
-MYDB
 webhostnameprefix WEB
 laptopnameprefix CLIENT
 

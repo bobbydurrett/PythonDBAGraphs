@@ -43,13 +43,13 @@ output_dir = None
 
 # files
 
-ashcpu_file = None
 password_file = None
 
 # fixed file names
 
 directories_file = 'directories.txt'
 userandfiles_file = 'userandfilenames.txt'
+ashcpu_file = 'ashcpufile.txt'
 
 # Oracle user
 
@@ -102,9 +102,8 @@ def get_user_and_files():
     Get Oracle user name and file names.
     """
     lines = read_config_file(util.config_dir,util.userandfiles_file)
-    util.my_oracle_user = lines[4]
-    util.password_file = lines[5]
-    util.ashcpu_file = lines[6]
+    util.my_oracle_user = lines[3]
+    util.password_file = lines[4]
     
 def load_configuration():
     """ 

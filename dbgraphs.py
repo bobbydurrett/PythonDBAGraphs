@@ -40,6 +40,10 @@ Load the directory names, file names, and Oracle user name.
 
 util.load_configuration()
 
+# global variable holding database name
+
+database='ORCL'
+
 def ashcpu():
 
     """
@@ -47,17 +51,14 @@ def ashcpu():
     by various parts of the application. The graph is configured by lines in 
     the text file ashcpufile.txt.
     
-    The first line of the file is the Oracle database name.
-    
-    Each additional line is part of a client machine name and a label
+    Each line is part of a client machine name and a label
     for machines with that pattern.
     
     For example:
     
-    MYDB
     abcd WEBFARM
     
-    Any client machines of the database MYDB with the string abcd in their name 
+    Any client machines with the string abcd in their name 
     will have their database cpu usage grouped into the category WEBFARM.
     
     The graph is hard coded to only look at CPU usage between 8 am and 5 pm
@@ -72,8 +73,8 @@ def ashcpu():
      
     c = perfq.cpubymachine(day,8,17)
     
-    lines = util.read_config_file(util.config_dir,util.ashcpu_file)
-    database=lines.pop(0)
+    lines = util.read_config_file(util.config_dir,database+util.ashcpu_file)
+
     for l in lines:
         args = l.split()
         if len(args) == 2:
@@ -95,7 +96,6 @@ def ashcpu():
 def onewait():
     # Get user input
     
-    database=util.input_with_default('database','ORCL')
     wait_event=util.input_with_default('wait event','db file sequential read')
     min_waits=int(util.input_with_default('minimum number of waits per hour','0'))
     
@@ -128,7 +128,6 @@ def onewait():
 def simplesqlstat():
     # Get user input
     
-    database=util.input_with_default('database','ORCL')
     sql_id=util.input_with_default('SQL_ID','acrg0q0qtx3gr')
     
     # Use my db login credentials
@@ -158,10 +157,7 @@ def simplesqlstat():
                           date_time,executions,avg_elapsed)
 
 def allsql():
-    # Get user input
-    
-    database=util.input_with_default('database','ORCL')
-    
+   
     # Use my db login credentials
     
     user=util.my_oracle_user
@@ -187,15 +183,23 @@ def allsql():
     
     myplot.frequency_average(title,top_label,bottom_label,
                           date_time,executions,avg_elapsed)
-
     
 parser = argparse.ArgumentParser(description='Create a database performance graph')
 parser.add_argument('reportname', choices=['ashcpu', 'onewait','simplesqlstat','allsql'], 
                    help='Name of report')
 parser.add_argument('destination', choices=['file', 'screen'], 
                    help='Where to send the graph')
+parser.add_argument('database',default=None,nargs='?',
+                   help='Name of the database')
+                   
 
 args = parser.parse_args()
+
+if args.database <> None:
+    database = args.database.upper()
+else:
+    database=util.input_with_default('database','ORCL')
+
 myplot.destination = args.destination
 if args.reportname == 'ashcpu':
     ashcpu()

@@ -1,7 +1,6 @@
 # The lines after these comments contain the following:
 # First the Oracle user to connect to the databases.
-# Next the name of the password file and ashcpu config
-# file.
+# Last, the name of the password file.
 MYUSERNAME
 oraclepassword.txt
-ashcpufile.txt
+

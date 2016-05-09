@@ -21,24 +21,27 @@ Command line help:
 
 python dbgraphs.py -h
 
-usage: dbgraphs.py [-h] {ashcpu,onewait,simplesqlstat,allsql} {file,screen}
+usage: dbgraphs.py [-h]
+                   {ashcpu,onewait,simplesqlstat,allsql} {file,screen}
+                   [database]
 
 Create a database performance graph
 
 positional arguments:
-
-  {ashcpu,onewait,simplesqlstat,allsql} Name of report
-  
-  {file,screen} Where to send the graph
+  {ashcpu,onewait,simplesqlstat,allsql}
+                        Name of report
+  {file,screen}         Where to send the graph
+  database              Name of the database (optional)
 
 optional arguments:
   -h, --help            show this help message and exit
 
 Example:
 
-python dbgraphs.py onewait screen
+python dbgraphs.py onewait screen ORCL
 
-This creates the onewait graph and sends the output to the screen.
+This creates the onewait graph on the ORCL database and sends the output to 
+the screen.
 
 Requirements:
 
@@ -57,8 +60,7 @@ location as the util.py script. The directories are the configuration,
 password, and output directories.
 
 The configuration directory contains the file userandfilenames.txt
-which has the Oracle user name and the file names for the ASH CPU
-report configuration and the name of the password file.
+which has the Oracle user name and the name of the password file.
 
 The password directory contains the password file. It has lines in this 
 format:

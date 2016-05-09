@@ -46,21 +46,23 @@ destination='screen'
         
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.cm as cmx
-import matplotlib.colors as colors
 import util
-
-# from http://stackoverflow.com/questions/14720331/how-to-generate-random-colors-in-matplotlib
-
-def get_cmap(N):
-    '''Returns a function that maps each index in 0, 1, ... N-1 to a distinct 
-    RGB color.'''
-    color_norm  = colors.Normalize(vmin=0, vmax=N-1)
-    scalar_map = cmx.ScalarMappable(norm=color_norm, cmap='prism') 
-    def map_index_to_rgb_color(index):
-        return scalar_map.to_rgba(index)
-    return map_index_to_rgb_color
+   
+def my_colors(colornum):
+    """
+    Returns a color that can be used in a plot.
+    Define a number of colors that I would like to see
+    in stacked bar graphs, lines, etc.
+    """
     
+    mycolorlist=[(0.9,0.0,0.0), (0.0,0.9,0.0), (0.0,0.0,0.9),
+    (1.0,1.0,0.0), (0.0,0.9,0.9), (0.9,0.0,0.9),
+    (1.0,0.6,0.0), (0.3,0.9,0.7)]
+      
+    num_colors=len(mycolorlist)
+    
+    return mycolorlist[(colornum%num_colors) - 1]
+   
 def nonetozero(value):
     """
     Returns 0.0 if passed None.
@@ -99,17 +101,12 @@ def plot_cpu_by_day(database,day,results,column_names):
     xvalues = np.arange(number_of_bars)    # the x locations for the groups
     width = 0.35       # the width of the bars compared with x index
     
-    # get color map so I can use a color for each column's data
-    
-    number_of_columns = len(column_names)
-
-    cmp = get_cmap(number_of_columns)
-    
     # Each level of the bar graph is a plot which is a member of the list
     # plots. Each plot represents a specific class of machines. Each class
     # is a different column in the results returned by the query. So there
     # is one bar plot for each column of the results except the first one 
     # which is just the date.
+    number_of_columns = len(column_names)
     plots = []
     for c in range(1,number_of_columns):
         # yvalues is the top of the bar for a given color
@@ -128,7 +125,7 @@ def plot_cpu_by_day(database,day,results,column_names):
                 btemp += 100.0*nonetozero(r[b])
             bottomvals.append(btemp)
         # draw the next color in the stack of bars and save on the plots list
-        p = plt.bar(xvalues, yvalues, width,color=cmp(c-1),bottom=bottomvals)
+        p = plt.bar(xvalues, yvalues, width,color=my_colors(c),bottom=bottomvals)
         plots.append(p)
 
     plt.ylabel('CPU % Utilization')
@@ -252,3 +249,4 @@ def frequency_average(title,top_label,bottom_label,
     fileorscreen(title+'.png')
     
     return
+

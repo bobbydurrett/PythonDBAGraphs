@@ -256,3 +256,70 @@ def frequency_average(title,top_label,bottom_label,
     
     return
 
+def colorsquares(fixed_color,fixed_value):       
+    """
+    Shows a range of colors. Used to help choose
+    which color (r,g,b) to use in a graph.
+    
+    Increments of 0.1
+    
+    Choose one color to be fixed.
+    'r','g','b'
+
+    Set that color's value,0.0-1.0.
+
+    """
+
+    if fixed_color not in ['r','g','b']:
+        print "Fixed color must be r, g, or b"
+        return
+    
+    if fixed_value < 0.0 or fixed_value > 1.0:
+        print "Fixed color value must be between 0.0 and 1.0"
+        return
+    
+    inc = 0.1
+    
+    if fixed_color == 'r':
+        title = "Red fixed "
+    elif fixed_color == 'g':
+        title = "Green fixed "
+    elif fixed_color == 'b':
+        title = "Blue fixed "
+
+    title = title + "value = "+str(fixed_value)
+    
+    # set the screen title, size, density
+    
+    plt.figure(title,graph_dimensions,graph_dpi)
+    
+    if fixed_color == 'r':
+        plt.ylabel('Green')
+        plt.xlabel('Blue')
+    elif fixed_color == 'g':
+        plt.ylabel('Red')
+        plt.xlabel('Blue')
+    elif fixed_color == 'b':
+        plt.ylabel('Red')
+        plt.xlabel('Green')
+    
+    plt.title(title)
+
+    for yidx in range(11):
+        x=[]
+        y=[]
+        c=[]
+        bt=[]
+        for xidx in range(11):
+            x.append(xidx*inc)
+            y.append(inc)
+            bt.append(yidx*inc)
+            if fixed_color == 'r':
+                c.append((fixed_value,yidx*inc,xidx*inc))
+            elif fixed_color == 'g':
+                c.append((yidx*inc,fixed_value,xidx*inc))
+            elif fixed_color == 'b':
+                c.append((yidx*inc,xidx*inc,fixed_value))
+        plt.bar(x,y,inc,color=c,bottom=bt)
+    plt.autoscale(tight=True)
+    plt.show()

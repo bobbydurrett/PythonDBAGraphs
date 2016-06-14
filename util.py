@@ -50,6 +50,7 @@ password_file = None
 directories_file = 'directories.txt'
 userandfiles_file = 'userandfilenames.txt'
 ashcpu_file = 'ashcpufile.txt'
+groupsigs_file = 'groupofsignatures.txt'
 
 # Oracle user
 

@@ -222,3 +222,80 @@ and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
 group by sn.END_INTERVAL_TIME
 order by sn.END_INTERVAL_TIME"""
     return q_string
+
+"""
+Example of the type of query that this class builds:
+
+select
+to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+sum(ss.executions_delta) TOTAL_EXECUTIONS,
+sum(ELAPSED_TIME_DELTA)/((sum(executions_delta)+1)) ELAPSED_AVG_MICRO
+from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
+where ss.snap_id=sn.snap_id
+and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
+and ss.FORCE_MATCHING_SIGNATURE in
+(
+14038313233049026256,
+18385146879684525921,
+2974462313782736551,
+12492389898598272683,
+14164303807833460050,
+15927676903549361476,
+9120348263769454156,
+10517599934976061598,
+6987137087681155918,
+11181311136166944889,
+187803040686893225
+)
+group by sn.END_INTERVAL_TIME
+order by sn.END_INTERVAL_TIME;
+
+This shows the average elapsed time and total number of executions for 
+a group of SQL statements defined by their force matching signature.
+A signature represents a group of queries that are the same except for their
+constants. The goal of this query is to pick some group of queries 
+that we care about such as the main queries the users use every day and
+show their performance over time. It does hide the details of the individual
+queries but may have value if we choose the best set of signatures.
+
+"""
+
+class groupofsignatures():
+    def __init__(self):
+        self.signatures = []
+         
+    def add_signature(self,signature):
+        """ 
+        Add to the list of FORCE_MATCHING_SIGNATURE values
+        for the query.
+        """
+        # signatures has only one entry per signature
+        if signature not in self.signatures:
+            self.signatures.append(signature)
+        
+    def build_query(self):
+        """ puts the query together"""
+        q_string = """
+select
+to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+sum(ss.executions_delta) TOTAL_EXECUTIONS,
+sum(ELAPSED_TIME_DELTA)/((sum(executions_delta)+1)) ELAPSED_AVG_MICRO
+from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
+where ss.snap_id=sn.snap_id
+and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
+and ss.FORCE_MATCHING_SIGNATURE in
+(
+"""
+        snum = 0;
+        slen = len(self.signatures)
+        for s in self.signatures:
+            q_string += str(s)
+            snum += 1;
+            if snum < slen:
+                q_string += ",\n"             
+        q_string += """
+)
+group by sn.END_INTERVAL_TIME
+order by sn.END_INTERVAL_TIME
+"""        
+        return q_string

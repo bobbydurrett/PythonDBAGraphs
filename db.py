@@ -97,6 +97,9 @@ class connection:
         """
         r = self.run_return_all_results(query)
         
+        if len(r) == 0:
+            return None
+        
         number_columns = len(r[0])
 
         # create a list of empty lists

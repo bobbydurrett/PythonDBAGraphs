@@ -183,9 +183,57 @@ def allsql():
     
     myplot.frequency_average(title,top_label,bottom_label,
                           date_time,executions,avg_elapsed)
+
+def groupsigs():
+
+    """
+    This shows the average elapsed time and total number of executions for 
+    a group of SQL statements defined by their force matching signature.
+    A signature represents a group of queries that are the same except for their
+    constants. The goal of this query is to pick some group of queries 
+    that we care about such as the main queries the users use every day and
+    show their performance over time. It does hide the details of the individual
+    queries but may have value if we choose the best set of signatures.   
+    """
+
+    user=util.my_oracle_user
+     
+    queryobj = perfq.groupofsignatures()
     
+    lines = util.read_config_file(util.config_dir,database+util.groupsigs_file)
+
+    for line in lines:
+        if len(line) > 0:
+            queryobj.add_signature(int(line))
+    
+    querytext = queryobj.build_query()
+    
+    user=util.my_oracle_user
+    password=util.get_oracle_password(database)
+    dbconn = db.connection(user,password,database)
+    
+    results = dbconn.run_return_flipped_results(querytext)
+    
+    if results == None:
+        print "No results returned"
+        return
+    
+    # plot query
+        
+    title = "SQL matching group of signatures on "+database+" database"
+    top_label = "Number of executions"
+    bottom_label = "Averaged Elapsed Microseconds"
+    
+    date_time=results[0]
+    executions=results[1]
+    avg_elapsed=results[2]
+    
+    myplot.frequency_average(title,top_label,bottom_label,
+                          date_time,executions,avg_elapsed)
+
+                
 parser = argparse.ArgumentParser(description='Create a database performance graph')
-parser.add_argument('reportname', choices=['ashcpu', 'onewait','simplesqlstat','allsql'], 
+parser.add_argument('reportname', choices=['ashcpu', 'onewait','simplesqlstat','allsql','groupsigs'], 
                    help='Name of report')
 parser.add_argument('destination', choices=['file', 'screen'], 
                    help='Where to send the graph')
@@ -209,4 +257,6 @@ elif args.reportname == 'simplesqlstat':
     simplesqlstat()
 elif args.reportname == 'allsql':
     allsql()
+elif args.reportname == 'groupsigs':
+    groupsigs()
 

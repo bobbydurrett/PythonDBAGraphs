@@ -286,6 +286,8 @@ and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
 and ss.FORCE_MATCHING_SIGNATURE in
 (
 """
+        # Add the signatures to the query with commas
+        # and newlines after all but the last one.
         snum = 0;
         slen = len(self.signatures)
         for s in self.signatures:

@@ -16,22 +16,27 @@ simplesqlstat - Show average elapsed versus executions
 
 allsql - Show average elapsed versus executions
          for all SQL statements.
+         
+groupsigs - Show average elapsed versus executions
+            for SQL statements whose force matching
+            signature is in a specified group of
+            signatures.
           
 Command line help:
 
 python dbgraphs.py -h
 
 usage: dbgraphs.py [-h]
-                   {ashcpu,onewait,simplesqlstat,allsql} {file,screen}
-                   [database]
+                   {ashcpu,onewait,simplesqlstat,allsql,groupsigs}
+                   {file,screen} [database]
 
 Create a database performance graph
 
 positional arguments:
-  {ashcpu,onewait,simplesqlstat,allsql}
+  {ashcpu,onewait,simplesqlstat,allsql,groupsigs}
                         Name of report
   {file,screen}         Where to send the graph
-  database              Name of the database (optional)
+  database              Name of the database
 
 optional arguments:
   -h, --help            show this help message and exit

@@ -323,3 +323,60 @@ def colorsquares(fixed_color,fixed_value):
         plt.bar(x,y,inc,color=c,bottom=bt)
     plt.autoscale(tight=True)
     plt.show()
+    
+def plotmulti(title,y_label,number_of_plots,plot_names,timeandplots):
+    """
+    Creates a single graph with date and time as the x axis and
+    a variable number of plots.
+    
+    Inputs:
+        title - title across the top of the plot
+        y_label - y label on top subplot
+        plot_names - name of each plot - list
+        timeandplots - lists of datetimes, and each plotted value - list
+    
+    """
+        
+# set the screen title, size, density
+    
+    plt.figure(title,graph_dimensions,graph_dpi)
+    
+    date_time=timeandplots[0]
+
+# cull date and time x ticks down to num_ticks ticks
+# so they fit on the screen
+    num_ticks=25
+    times_per_tick = len(date_time)/num_ticks
+    if times_per_tick < 1:
+        times_per_tick = 1
+    trimmed_date_time=[]
+    for i in range(0,len(date_time)):
+        if i%times_per_tick == 0:
+           trimmed_date_time.append(date_time[i])
+    xtick_locations=range(0,len(date_time),times_per_tick)
+           
+# do the plot
+    plt.title(title)
+    plt.ylabel(y_label)
+    plt.minorticks_on()
+    plt.xticks(xtick_locations,trimmed_date_time,rotation=90)
+    plt.grid(which="major")
+    
+    for plot_num in range(number_of_plots):
+         plt.plot(timeandplots[plot_num+1],color=my_colors(plot_num))
+    plt.legend(plot_names,loc='upper left')
+    plt.autoscale(tight=True)
+    
+    # subplots_adjust settings - single plot so zero space between plots
+    vleft  = 0.05  # the left side of the subplots of the figure
+    vright = 0.97    # the right side of the subplots of the figure
+    vbottom = 0.12   # the bottom of the subplots of the figure
+    vtop = 0.95      # the top of the subplots of the figure
+    vwspace = 0.0   # the amount of width reserved for blank space between subplots
+    vhspace = 0.0   # the amount of height reserved for white space between subplots
+
+    plt.subplots_adjust(left=vleft,right=vright,bottom=vbottom,top=vtop,wspace=vwspace,hspace=vhspace)
+
+    fileorscreen(title+'.png')
+    
+    return    

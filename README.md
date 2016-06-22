@@ -22,18 +22,23 @@ groupsigs - Show average elapsed versus executions
             signature is in a specified group of
             signatures.
           
+sigscpuio - Show total elapsed, CPU, and IO time
+            for SQL statements whose force matching
+            signature is in a specified group of
+            signatures.
+          
 Command line help:
 
 python dbgraphs.py -h
 
 usage: dbgraphs.py [-h]
-                   {ashcpu,onewait,simplesqlstat,allsql,groupsigs}
+                   {ashcpu,onewait,simplesqlstat,allsql,groupsigs,sigscpuio}
                    {file,screen} [database]
 
 Create a database performance graph
 
 positional arguments:
-  {ashcpu,onewait,simplesqlstat,allsql,groupsigs}
+  {ashcpu,onewait,simplesqlstat,allsql,groupsigs,sigscpuio}
                         Name of report
   {file,screen}         Where to send the graph
   database              Name of the database

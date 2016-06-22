@@ -222,7 +222,7 @@ and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
 group by sn.END_INTERVAL_TIME
 order by sn.END_INTERVAL_TIME"""
     return q_string
-
+    
 """
 Example of the type of query that this class builds:
 
@@ -301,3 +301,19 @@ group by sn.END_INTERVAL_TIME
 order by sn.END_INTERVAL_TIME
 """        
         return q_string
+        
+    def build_query2(self):
+        """ 
+        Restructures query for use with single plot with 
+        elapsed, cpu, and IO.
+        """
+        q1_string = self.build_query()
+        q2_string = q1_string[0:64]
+        q2_string += """
+sum(ELAPSED_TIME_DELTA)/1000000 ELAPSED_SECONDS,
+sum(CPU_TIME_DELTA)/1000000 CPU_SECONDS,
+sum(IOWAIT_DELTA)/1000000 IO_SECONDS
+"""
+        q2_string += q1_string[178:]
+        
+        return q2_string

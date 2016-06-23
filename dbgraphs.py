@@ -263,12 +263,7 @@ def sigscpuio():
         
     title = "SQL matching group of signatures on "+database+" database"
     y_label = "Seconds"
-    
-    date_time=results[0]
-    elapsed=results[1]
-    cpu=results[2]
-    io=results[2]
-    
+        
     number_of_plots=3
     
     plot_names=["Elapsed","CPU","IO"]
@@ -276,8 +271,49 @@ def sigscpuio():
     myplot.plotmulti(title,y_label,number_of_plots,
                      plot_names,results)
 
+def sigselapctcpu():
+
+    """
+    Plots elapsed for a group of sql statements based
+    on their signatures against percent CPU of the host. 
+    """
+
+    user=util.my_oracle_user
+     
+    queryobj = perfq.groupofsignatures()
+    
+    lines = util.read_config_file(util.config_dir,database+util.groupsigs_file)
+
+    for line in lines:
+        if len(line) > 0:
+            queryobj.add_signature(int(line))
+    
+    querytext = queryobj.build_query3()
+    
+    user=util.my_oracle_user
+    password=util.get_oracle_password(database)
+    dbconn = db.connection(user,password,database)
+    
+    results = dbconn.run_return_flipped_results(querytext)
+    
+    if results == None:
+        print "No results returned"
+        return
+    
+    # plot query
+        
+    title = "SQL matching group of signatures on "+database+" database"
+    y_label = "Minutes versus Percentage"
+        
+    number_of_plots=2
+    
+    plot_names=["CPU % Busy","Elapsed in Minutes"]
+    
+    myplot.plotmulti(title,y_label,number_of_plots,
+                     plot_names,results)
+
 parser = argparse.ArgumentParser(description='Create a database performance graph')
-parser.add_argument('reportname', choices=['ashcpu', 'onewait','simplesqlstat','allsql','groupsigs','sigscpuio'], 
+parser.add_argument('reportname', choices=['ashcpu', 'onewait','simplesqlstat','allsql','groupsigs','sigscpuio','sigselapctcpu'], 
                    help='Name of report')
 parser.add_argument('destination', choices=['file', 'screen'], 
                    help='Where to send the graph')
@@ -305,4 +341,6 @@ elif args.reportname == 'groupsigs':
     groupsigs()
 elif args.reportname == 'sigscpuio':
     sigscpuio()
+elif args.reportname == 'sigselapctcpu':
+    sigselapctcpu()
 

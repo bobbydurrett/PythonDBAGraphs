@@ -26,19 +26,25 @@ sigscpuio - Show total elapsed, CPU, and IO time
             for SQL statements whose force matching
             signature is in a specified group of
             signatures.
+
+sigselapctcpu - Show total elapsed for SQL statements 
+                whose force matching signature is in a 
+                specified group of signatures. Show 
+                percent CPU used on same graph.
           
 Command line help:
 
 python dbgraphs.py -h
 
 usage: dbgraphs.py [-h]
-                   {ashcpu,onewait,simplesqlstat,allsql,groupsigs,sigscpuio}
+
+                   {ashcpu,onewait,simplesqlstat,allsql,groupsigs,sigscpuio,sigselapctcpu}
                    {file,screen} [database]
 
 Create a database performance graph
 
 positional arguments:
-  {ashcpu,onewait,simplesqlstat,allsql,groupsigs,sigscpuio}
+  {ashcpu,onewait,simplesqlstat,allsql,groupsigs,sigscpuio,sigselapctcpu}
                         Name of report
   {file,screen}         Where to send the graph
   database              Name of the database

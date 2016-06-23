@@ -31,6 +31,13 @@ sigselapctcpu - Show total elapsed for SQL statements
                 whose force matching signature is in a 
                 specified group of signatures. Show 
                 percent CPU used on same graph.
+
+sigfour - Four metrics for SQL statements 
+          whose force matching signature is in a 
+          specified group of signatures. These are
+          number of executions, average elapsed time,
+          CPU percent used, and average single block
+          read time.
           
 Command line help:
 
@@ -38,13 +45,13 @@ python dbgraphs.py -h
 
 usage: dbgraphs.py [-h]
 
-                   {ashcpu,onewait,simplesqlstat,allsql,groupsigs,sigscpuio,sigselapctcpu}
+                   {ashcpu,onewait,simplesqlstat,allsql,groupsigs,sigscpuio,sigselapctcpu,sigfour}
                    {file,screen} [database]
 
 Create a database performance graph
 
 positional arguments:
-  {ashcpu,onewait,simplesqlstat,allsql,groupsigs,sigscpuio,sigselapctcpu}
+  {ashcpu,onewait,simplesqlstat,allsql,groupsigs,sigscpuio,sigselapctcpu,sigfour}
                         Name of report
   {file,screen}         Where to send the graph
   database              Name of the database

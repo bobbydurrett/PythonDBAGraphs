@@ -374,3 +374,76 @@ pb.snap_id=sn.snap_id
 order by pb.snap_id
 """        
         return q_string
+
+    def build_query4(self):
+        """ 
+        Build query for use with single plot with 
+        executions, average elapsed, cpu percent
+        and average single block IO time.
+        """
+        q_string = """
+select
+to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+pb.percent_busy,
+ela.EXECUTIONS_SCALED,
+ela.ELAPSED_AVG,
+rd.READ_AVG
+from
+(select 
+idle_before.SNAP_ID,
+(100*(busy_after.value-busy_before.value)/
+(busy_after.value-busy_before.value +
+idle_after.value-idle_before.value)) percent_busy
+from 
+DBA_HIST_OSSTAT idle_before, 
+DBA_HIST_OSSTAT idle_after, 
+DBA_HIST_OSSTAT busy_before,
+DBA_HIST_OSSTAT busy_after
+where
+idle_before.SNAP_ID=busy_before.SNAP_ID and
+idle_after.SNAP_ID=busy_after.SNAP_ID and
+idle_before.SNAP_ID+1=idle_after.SNAP_ID and
+idle_before.STAT_NAME='IDLE_TIME' and
+idle_after.STAT_NAME='IDLE_TIME' and
+busy_before.STAT_NAME='BUSY_TIME' and
+busy_after.STAT_NAME='BUSY_TIME') pb,
+(select
+SNAP_ID,
+sum(ss.executions_delta)/25000 EXECUTIONS_SCALED,
+sum(ELAPSED_TIME_DELTA)/((20*sum(executions_delta)+1)) ELAPSED_AVG
+from DBA_HIST_SQLSTAT ss
+where 
+ss.FORCE_MATCHING_SIGNATURE in
+(
+"""
+        # Add the signatures to the query with commas
+        # and newlines after all but the last one.
+        snum = 0;
+        slen = len(self.signatures)
+        for s in self.signatures:
+            q_string += str(s)
+            snum += 1;
+            if snum < slen:
+                q_string += ",\n"             
+        q_string += """
+)
+group by SNAP_ID) ela,
+(
+select before.snap_id,
+(after.time_waited_micro-before.time_waited_micro)/(2000*(after.total_waits-before.total_waits)) READ_AVG
+from DBA_HIST_SYSTEM_EVENT before, DBA_HIST_SYSTEM_EVENT after
+where before.event_name='db file sequential read' and
+after.event_name=before.event_name and
+after.snap_id=before.snap_id+1 and
+after.instance_number=1 and
+before.instance_number=after.instance_number and
+(after.total_waits-before.total_waits) > 0
+) rd,
+DBA_HIST_SNAPSHOT sn
+where 
+pb.snap_id=ela.snap_id and
+pb.snap_id=rd.snap_id and
+pb.snap_id=sn.snap_id
+order by pb.snap_id
+"""        
+        return q_string

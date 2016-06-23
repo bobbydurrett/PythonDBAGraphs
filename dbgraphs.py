@@ -344,7 +344,7 @@ def sigfour():
     # plot query
         
     title = "SQL matching group of signatures on "+database+" database"
-    y_label = "Minutes versus Percentage"
+    y_label = " "
         
     number_of_plots=4
     

@@ -380,3 +380,94 @@ def plotmulti(title,y_label,number_of_plots,plot_names,timeandplots):
     fileorscreen(title+'.png')
     
     return    
+
+def plot_four(title,label1,label2,label3,label4,
+                      date_time,plot1,plot2,plot3,plot4):
+    """
+    Four subplots
+    
+    Inputs:
+        title - title across the top of the plot
+        label1 - y label on subplot 1
+        label2 - y label on subplot 2
+        label3 - y label on subplot 3
+        label4 - y label on subplot 4
+        date_time - date and time of sample - list
+        plot1 - plotted values list 1 - list
+        plot2 - plotted values list 1 - list
+        plot3 - plotted values list 1 - list
+        plot4 - plotted values list 1 - list
+    
+    """
+    
+# set the screen title, size, density
+    
+    plt.figure(title,graph_dimensions,graph_dpi)
+
+# cull date and time x ticks down to num_ticks ticks
+# so they fit on the screen
+    num_ticks=25
+    times_per_tick = len(date_time)/num_ticks
+    if times_per_tick < 1:
+        times_per_tick = 1
+    trimmed_date_time=[]
+    for i in range(0,len(date_time)):
+        if i%times_per_tick == 0:
+           trimmed_date_time.append(date_time[i])
+    xtick_locations=range(0,len(date_time),times_per_tick)
+           
+# do the plot
+# plot_number 1
+    nrows = 2
+    ncols = 2
+    plot_number = 1   
+    plt.subplot(nrows,ncols,plot_number)
+    plt.title(title)
+    plt.ylabel(label1)
+    empty_label_list=[]
+    plt.minorticks_on()
+    plt.xticks(xtick_locations,empty_label_list)
+    plt.grid(which="major")
+    red = 'r'
+    plt.plot(plot1,red)
+# plot_number 2
+    plot_number = 2   
+    plt.subplot(nrows,ncols,plot_number)
+    plt.ylabel(label2)
+    plt.minorticks_on()
+    plt.xticks(xtick_locations,empty_label_list)
+    plt.grid(which="major")
+    green='g'
+    plt.plot(plot2,green)
+# plot_number 3
+    plot_number = 3   
+    plt.subplot(nrows,ncols,plot_number)
+    plt.ylabel(label3)
+    plt.minorticks_on()
+    plt.xticks(xtick_locations,trimmed_date_time,rotation=90)
+    plt.grid(which="major")
+    blue = 'b'
+    plt.plot(plot3,blue)
+# plot_number 4
+    plot_number = 4   
+    plt.subplot(nrows,ncols,plot_number)
+    plt.ylabel(label4)
+    plt.minorticks_on()
+    plt.xticks(xtick_locations,trimmed_date_time,rotation=90)
+    plt.grid(which="major")
+    yellow='y'
+    plt.plot(plot4,yellow)
+    
+# subplots_adjust settings
+    vleft  = 0.07  # the left side of the subplots of the figure
+    vright = 0.97    # the right side of the subplots of the figure
+    vbottom = 0.15   # the bottom of the subplots of the figure
+    vtop = 0.95      # the top of the subplots of the figure
+    vwspace = 0.1   # the amount of width reserved for blank space between subplots
+    vhspace = 0.08   # the amount of height reserved for white space between subplots
+
+    plt.subplots_adjust(left=vleft,right=vright,bottom=vbottom,top=vtop,wspace=vwspace,hspace=vhspace)
+    
+    fileorscreen(title+'.png')
+    
+    return

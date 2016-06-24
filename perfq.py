@@ -409,8 +409,8 @@ busy_before.STAT_NAME='BUSY_TIME' and
 busy_after.STAT_NAME='BUSY_TIME') pb,
 (select
 SNAP_ID,
-sum(ss.executions_delta)/25000 EXECUTIONS_SCALED,
-sum(ELAPSED_TIME_DELTA)/((20*sum(executions_delta)+1)) ELAPSED_AVG
+sum(ss.executions_delta)/100000 EXECUTIONS_SCALED,
+sum(ELAPSED_TIME_DELTA)/((sum(executions_delta)+1)) ELAPSED_AVG
 from DBA_HIST_SQLSTAT ss
 where 
 ss.FORCE_MATCHING_SIGNATURE in
@@ -430,7 +430,7 @@ ss.FORCE_MATCHING_SIGNATURE in
 group by SNAP_ID) ela,
 (
 select before.snap_id,
-(after.time_waited_micro-before.time_waited_micro)/(2000*(after.total_waits-before.total_waits)) READ_AVG
+(after.time_waited_micro-before.time_waited_micro)/(1000*(after.total_waits-before.total_waits)) READ_AVG
 from DBA_HIST_SYSTEM_EVENT before, DBA_HIST_SYSTEM_EVENT after
 where before.event_name='db file sequential read' and
 after.event_name=before.event_name and

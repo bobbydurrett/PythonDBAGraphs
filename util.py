@@ -129,13 +129,13 @@ def get_oracle_password(database):
     lines = read_config_file(util.password_dir,util.password_file)
     # look for specific database first
     for oneline in lines:
-        if oneline[0] <> '#':
+        if len(oneline) > 0 and oneline[0] <> '#':
             fields = oneline.split(':')
             if fields[0].upper() == database.upper() and fields[1].upper() == util.my_oracle_user.upper():
                 return fields[2]
     # look for ALLDBS indicating same password all databases
     for oneline in lines:
-        if oneline[0] <> '#':
+        if len(oneline) > 0 and oneline[0] <> '#':
             fields = oneline.split(':')
             if fields[0].upper() == 'ALLDBS' and fields[1].upper() == util.my_oracle_user.upper():
                 return fields[2]

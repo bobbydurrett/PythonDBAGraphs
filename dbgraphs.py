@@ -266,7 +266,7 @@ def sigscpuio():
         
     number_of_plots=3
     
-    plot_names=["Elapsed","CPU","IO"]
+    plot_names=["Elapsed","CPU+IO","IO"]
     
     myplot.plotmulti(title,y_label,number_of_plots,
                      plot_names,results)

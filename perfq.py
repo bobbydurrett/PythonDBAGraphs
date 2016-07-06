@@ -311,7 +311,7 @@ order by sn.END_INTERVAL_TIME
         q2_string = q1_string[0:64]
         q2_string += """
 sum(ELAPSED_TIME_DELTA)/1000000 ELAPSED_SECONDS,
-sum(CPU_TIME_DELTA)/1000000 CPU_SECONDS,
+(sum(CPU_TIME_DELTA)+sum(IOWAIT_DELTA))/1000000 CPU_IO_SECONDS,
 sum(IOWAIT_DELTA)/1000000 IO_SECONDS
 """
         q2_string += q1_string[178:]

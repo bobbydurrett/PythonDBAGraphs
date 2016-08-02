@@ -348,7 +348,8 @@ def sigfour():
     myplot.plot_four(title,"CPU % Busy","Number of executions (/100000)","Average Elapsed Time (microseconds)","Average single block read time (ms)",
     results[0],results[1],results[2],results[3],results[4])
 
-parser = argparse.ArgumentParser(description='Create a database performance graph')
+parser = argparse.ArgumentParser(description='Create a database performance graph',
+                                epilog="See README.md for more detailed help.")
 parser.add_argument('reportname', choices=['ashcpu', 'onewait','simplesqlstat','allsql','groupsigs','sigscpuio','sigselapctcpu','sigfour'], 
                    help='Name of report')
 parser.add_argument('destination', choices=['file', 'screen'], 

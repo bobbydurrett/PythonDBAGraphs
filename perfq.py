@@ -306,6 +306,27 @@ order by sn.END_INTERVAL_TIME
         """ 
         Restructures query for use with single plot with 
         elapsed, cpu, and IO.
+        
+        For example:
+            
+select
+to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+sum(ELAPSED_TIME_DELTA)/1000000 ELAPSED_SECONDS,
+(sum(CPU_TIME_DELTA)+sum(IOWAIT_DELTA))/1000000 CPU_IO_SECONDS,
+sum(IOWAIT_DELTA)/1000000 IO_SECONDS
+from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
+where ss.snap_id=sn.snap_id
+and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
+and ss.FORCE_MATCHING_SIGNATURE in
+(
+14038313233049026256,
+18385146879684525921,
+11181311136166944889,
+187803040686893225
+)
+group by sn.END_INTERVAL_TIME
+order by sn.END_INTERVAL_TIME
+
         """
         q1_string = self.build_query()
         q2_string = q1_string[0:64]
@@ -322,6 +343,51 @@ sum(IOWAIT_DELTA)/1000000 IO_SECONDS
         """ 
         Build query for use with single plot with 
         total elapsed versus percent busy cpu.
+        
+        For example:
+            
+select
+to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+pb.percent_busy,
+ela.ELAPSED_MINUTES
+from
+(select 
+idle_before.SNAP_ID,
+(100*(busy_after.value-busy_before.value)/
+(busy_after.value-busy_before.value +
+idle_after.value-idle_before.value)) percent_busy
+from 
+DBA_HIST_OSSTAT idle_before, 
+DBA_HIST_OSSTAT idle_after, 
+DBA_HIST_OSSTAT busy_before,
+DBA_HIST_OSSTAT busy_after
+where
+idle_before.SNAP_ID=busy_before.SNAP_ID and
+idle_after.SNAP_ID=busy_after.SNAP_ID and
+idle_before.SNAP_ID+1=idle_after.SNAP_ID and
+idle_before.STAT_NAME='IDLE_TIME' and
+idle_after.STAT_NAME='IDLE_TIME' and
+busy_before.STAT_NAME='BUSY_TIME' and
+busy_after.STAT_NAME='BUSY_TIME') pb,
+(select
+SNAP_ID,
+sum(ELAPSED_TIME_DELTA)/(60*1000000) ELAPSED_MINUTES
+from DBA_HIST_SQLSTAT ss
+where 
+ss.FORCE_MATCHING_SIGNATURE in
+(
+14038313233049026256,
+18385146879684525921,
+11181311136166944889,
+187803040686893225
+)
+group by SNAP_ID) ela,
+DBA_HIST_SNAPSHOT sn
+where 
+pb.snap_id=ela.snap_id and
+pb.snap_id=sn.snap_id
+order by pb.snap_id
+
         """
         q_string = """
 select

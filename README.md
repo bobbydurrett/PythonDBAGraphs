@@ -41,12 +41,10 @@ sigfour - Four metrics for SQL statements
           
 Command line help:
 
-python dbgraphs.py -h
-
 usage: dbgraphs.py [-h]
 
                    {ashcpu,onewait,simplesqlstat,allsql,groupsigs,sigscpuio,sigselapctcpu,sigfour}
-                   {file,screen} [database]
+                   {file,screen} [database] {Y,N}
 
 Create a database performance graph
 
@@ -55,13 +53,16 @@ positional arguments:
                         Name of report
   {file,screen}         Where to send the graph
   database              Name of the database
+  {Y,N}                 Show SQL that was executed (Y or N)
 
 optional arguments:
   -h, --help            show this help message and exit
 
+See README.md for more detailed help.
+
 Example:
 
-python dbgraphs.py onewait screen ORCL
+python dbgraphs.py onewait screen ORCL N
 
 This creates the onewait graph on the ORCL database and sends the output to 
 the screen.

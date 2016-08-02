@@ -27,6 +27,11 @@ Oracle database related code
 
 import cx_Oracle
 
+# Flag to show SQL statements as they are executed or not.
+# Either N or Y.
+
+showsql='N'
+
 # connection is single connection to database
 # single open cursor
 
@@ -49,6 +54,9 @@ class connection:
         Returns a list of tuples.
         Each tuple contains one row of query output.
         """
+        if showsql == 'Y':
+            print query
+            
         self.cur.execute(query)
         
         returned_list = []
@@ -76,6 +84,9 @@ class connection:
         In other words run something that is not
         a query.
         """
+        if showsql == 'Y':
+            print non_query
+
         self.cur.execute(non_query)
         return
 

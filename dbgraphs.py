@@ -356,6 +356,8 @@ parser.add_argument('destination', choices=['file', 'screen'],
                    help='Where to send the graph')
 parser.add_argument('database',default=None,nargs='?',
                    help='Name of the database')
+parser.add_argument('showsql', choices=['Y', 'N'], 
+                   help='Show SQL that was executed (Y or N)')
                    
 
 args = parser.parse_args()
@@ -366,6 +368,7 @@ else:
     database=util.input_with_default('database','ORCL')
 
 myplot.destination = args.destination
+db.showsql = args.showsql
 if args.reportname == 'ashcpu':
     ashcpu()
 elif args.reportname == 'onewait':

@@ -331,7 +331,7 @@ def plotmulti(title,y_label,number_of_plots,plot_names,timeandplots):
     
     Inputs:
         title - title across the top of the plot
-        y_label - y label on top subplot
+        y_label - y label of plot
         plot_names - name of each plot - list
         timeandplots - lists of datetimes, and each plotted value - list
     

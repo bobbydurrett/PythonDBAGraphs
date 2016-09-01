@@ -516,47 +516,15 @@ order by pb.snap_id
         
 
 def ashcputotal(start_time,end_time):
-    """ 
-    
-    Example query:
-
-select
-to_char(all_time.sample_time,'MMDD HH24:MI:SS'),
-all_time.cnt all_count,
-nvl(cpu_time.cnt,0) cpu_count
-from
-(select 
-sample_time,
-count(*) cnt
-from DBA_HIST_ACTIVE_SESS_HISTORY a
-where 
-sample_time 
-between 
-to_date('31-AUG-2016 12:00:00','DD-MON-YYYY HH24:MI:SS')
-and 
-to_date('31-AUG-2016 15:30:00','DD-MON-YYYY HH24:MI:SS')
-group by sample_time) all_time,
-(select 
-sample_time,
-count(*) cnt
-from DBA_HIST_ACTIVE_SESS_HISTORY a
-where 
-sample_time 
-between 
-to_date('31-AUG-2016 12:00:00','DD-MON-YYYY HH24:MI:SS')
-and 
-to_date('31-AUG-2016 15:30:00','DD-MON-YYYY HH24:MI:SS') and
-session_state = 'ON CPU'
-group by sample_time) cpu_time
-where
-all_time.sample_time=cpu_time.sample_time(+)
-order by all_time.sample_time;
-"""
+    """
+    Group by minute.
+    10 second samples.
+    """
     q_string = """
 select
-to_char(all_time.sample_time,'MMDD HH24:MI:SS'),
-all_time.cnt all_count,
-nvl(cpu_time.cnt,0) cpu_count
+to_char(all_time.sample_time,'MM/DD HH24:MI'),
+sum(all_time.cnt)/6 all_count,
+sum(nvl(cpu_time.cnt,0))/6 cpu_count
 from
 (select 
 sample_time,
@@ -591,7 +559,8 @@ session_state = 'ON CPU'
 group by sample_time) cpu_time
 where
 all_time.sample_time=cpu_time.sample_time(+)
-order by all_time.sample_time
+group by to_char(all_time.sample_time,'MM/DD HH24:MI')
+order by to_char(all_time.sample_time,'MM/DD HH24:MI')
 """
     return q_string
     

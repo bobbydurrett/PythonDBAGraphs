@@ -39,6 +39,9 @@ sigfour - Four metrics for SQL statements
           CPU percent used, and average single block
           read time.
           
+ashcount - For a time range show the number of active
+           sessions on CPU and total number active.
+          
 Command line help:
 
 usage: dbgraphs.py [-h]

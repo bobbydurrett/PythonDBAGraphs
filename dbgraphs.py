@@ -348,9 +348,47 @@ def sigfour():
     myplot.plot_four(title,"CPU % Busy","Number of executions (/100000)","Average Elapsed Time (microseconds)","Average single block read time (ms)",
     results[0],results[1],results[2],results[3],results[4])
 
+def ashcount():
+
+    """
+    
+    Shows ASH active session counts in time period.
+     
+    """
+
+    user=util.my_oracle_user
+    
+    start_time=util.input_with_default('Start date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-1900 12:00:00')
+
+    end_time=util.input_with_default('End date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-2200 12:00:00')
+     
+    querytext = perfq.ashcputotal(start_time,end_time)
+        
+    user=util.my_oracle_user
+    password=util.get_oracle_password(database)
+    dbconn = db.connection(user,password,database)
+    
+    results = dbconn.run_return_flipped_results(querytext)
+    
+    if results == None:
+        print "No results returned"
+        return
+    
+    # plot query
+        
+    title = "ASH active session count for "+database+" database"
+    y_label = "Sessions"
+        
+    number_of_plots=2
+    
+    plot_names=["Total","CPU"]
+    
+    myplot.plotmulti(title,y_label,number_of_plots,
+                     plot_names,results)
+
 parser = argparse.ArgumentParser(description='Create a database performance graph',
                                 epilog="See README for more detailed help.")
-parser.add_argument('reportname', choices=['ashcpu', 'onewait','simplesqlstat','allsql','groupsigs','sigscpuio','sigselapctcpu','sigfour'], 
+parser.add_argument('reportname', choices=['ashcpu', 'onewait','simplesqlstat','allsql','groupsigs','sigscpuio','sigselapctcpu','sigfour','ashcount'], 
                    help='Name of report')
 parser.add_argument('destination', choices=['file', 'screen'], 
                    help='Where to send the graph')
@@ -385,4 +423,6 @@ elif args.reportname == 'sigselapctcpu':
     sigselapctcpu()
 elif args.reportname == 'sigfour':
     sigfour()
+elif args.reportname == 'ashcount':
+    ashcount()
 

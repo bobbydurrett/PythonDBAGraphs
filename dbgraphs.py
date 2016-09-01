@@ -220,7 +220,7 @@ def groupsigs():
     
     # plot query
         
-    title = "SQL matching group of signatures on "+database+" database"
+    title = "SQL matching group of signatures on "+database+" database elapsed versus executions"
     top_label = "Number of executions"
     bottom_label = "Averaged Elapsed Microseconds"
     
@@ -261,7 +261,7 @@ def sigscpuio():
     
     # plot query
         
-    title = "SQL matching group of signatures on "+database+" database"
+    title = "SQL matching group of signatures on "+database+" database elapsed CPU IO"
     y_label = "Seconds"
         
     number_of_plots=3
@@ -302,7 +302,7 @@ def sigselapctcpu():
     
     # plot query
         
-    title = "SQL matching group of signatures on "+database+" database"
+    title = "SQL matching group of signatures on "+database+" database elapsed versus cpu"
     y_label = "Minutes versus Percentage"
         
     number_of_plots=2
@@ -343,7 +343,7 @@ def sigfour():
     
     # plot query
         
-    title = "SQL matching group of signatures on "+database+" database"
+    title = "SQL matching group of signatures on "+database+" database four graphs"
             
     myplot.plot_four(title,"CPU % Busy","Number of executions (/100000)","Average Elapsed Time (microseconds)","Average single block read time (ms)",
     results[0],results[1],results[2],results[3],results[4])

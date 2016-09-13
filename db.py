@@ -26,6 +26,7 @@ Oracle database related code
 """
 
 import cx_Oracle
+import sys
 
 # Flag to show SQL statements as they are executed or not.
 # Either N or Y.
@@ -39,14 +40,24 @@ class connection:
     def __init__(self,username,password,database):
         """ Login to database and open cursor """
         connect_string = username+'/'+password+'@'+database
-        self.con = cx_Oracle.connect(connect_string)
+        try:
+            self.con = cx_Oracle.connect(connect_string)
+        except cx_Oracle.DatabaseError as e:
+            print "Error logging in: "+str(e.args[0])
+            print "Username: "+username
+            print "Password: "+password
+            print "Database: "+database
+            sys.exit(-1)
         self.cur = self.con.cursor()
         self.column_names=[]
     
     def __del__(self):
         """ Close cursor and connection """
-        self.cur.close()
-        self.con.close()
+        try:
+            self.cur.close()
+            self.con.close()
+        except:
+            return
 
     def run_return_all_results(self,query):
         """ 

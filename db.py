@@ -33,6 +33,11 @@ import sys
 
 showsql='N'
 
+# Flag to show data returned from queries or not.
+# Either N or Y.
+
+showdata='N'
+
 # connection is single connection to database
 # single open cursor
 
@@ -59,6 +64,44 @@ class connection:
         except:
             return
 
+    def print_data(self,column_names,data_list):
+        """ 
+        Print a nicely formatted version of
+        the data returned by the query.
+        """
+
+# Get the maximum length of each column as a string
+
+        num_columns = len(column_names)
+
+# Initialize lengths to column lengths
+
+        max_lengths=[]
+        for cn in range(num_columns):
+            max_lengths.append(len(column_names[cn]))
+            
+# Loop through entire list
+
+        for d in data_list:
+            for cn in range(num_columns):
+                data_length = len(str(d[cn]))
+                if data_length > max_lengths[cn]:
+                   max_lengths[cn] = data_length
+                   
+# Print column names padding for max lengths 
+
+        column_name_header=""
+        for cn in range(num_columns):
+            column_name_header += column_names[cn].rjust(max_lengths[cn]) + " "
+        print column_name_header
+            
+# Print data with same padding
+        for d in data_list:
+            data_line=""
+            for cn in range(num_columns):
+                data_line += str(d[cn]).rjust(max_lengths[cn]) + " "
+            print data_line
+        
     def run_return_all_results(self,query):
         """ 
         Run the SQL Query and return all of the results.
@@ -78,9 +121,12 @@ class connection:
         self.column_names=[]
         for d in self.cur.description:
             self.column_names.append(d[0])
+            
+        if showdata == 'Y':
+            self.print_data(self.column_names,returned_list)
 
         return returned_list
-        
+ 
     def get_column_names(self):
         """ 
         Return a list of the names of the

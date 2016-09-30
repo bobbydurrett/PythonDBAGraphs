@@ -46,17 +46,18 @@ Command line help:
 
 usage: dbgraphs.py [-h]
 
-                   {ashcpu,onewait,simplesqlstat,allsql,groupsigs,sigscpuio,sigselapctcpu,sigfour}
-                   {file,screen} [database] {Y,N}
+                   {ashcpu,onewait,simplesqlstat,allsql,groupsigs,sigscpuio,sigselapctcpu,sigfour,ashcount}
+                   {file,screen} [database] {Y,N} {Y,N}
 
 Create a database performance graph
 
 positional arguments:
-  {ashcpu,onewait,simplesqlstat,allsql,groupsigs,sigscpuio,sigselapctcpu,sigfour}
+  {ashcpu,onewait,simplesqlstat,allsql,groupsigs,sigscpuio,sigselapctcpu,sigfour,ashcount}
                         Name of report
   {file,screen}         Where to send the graph
   database              Name of the database
   {Y,N}                 Show SQL that was executed (Y or N)
+  {Y,N}                 Show data returned by query (Y or N)
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -65,10 +66,11 @@ See README for more detailed help.
 
 Example:
 
-python dbgraphs.py onewait screen ORCL N
+python dbgraphs.py onewait screen ORCL N N
 
 This creates the onewait graph on the ORCL database and sends the output to 
-the screen. It does not display the SQL used.
+the screen. It does not display the SQL used and it does not output the
+data returned by the query.
 
 Requirements:
 

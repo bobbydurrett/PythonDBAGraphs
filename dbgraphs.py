@@ -396,6 +396,8 @@ parser.add_argument('database',default=None,nargs='?',
                    help='Name of the database')
 parser.add_argument('showsql', choices=['Y', 'N'], 
                    help='Show SQL that was executed (Y or N)')
+parser.add_argument('showdata', choices=['Y', 'N'], 
+                   help='Show data returned by query (Y or N)')
                    
 
 args = parser.parse_args()
@@ -407,6 +409,7 @@ else:
 
 myplot.destination = args.destination
 db.showsql = args.showsql
+db.showdata = args.showdata
 if args.reportname == 'ashcpu':
     ashcpu()
 elif args.reportname == 'onewait':

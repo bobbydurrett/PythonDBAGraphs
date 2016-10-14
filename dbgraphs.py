@@ -90,8 +90,39 @@ def ashcpu():
     results = h.save_day_results()
     
     column_names = h.get_column_names()
+    
+# Load global variables for graph    
+
+# Build list of labels for the bars
            
-    myplot.plot_cpu_by_day(database,day,results,column_names)
+    myplot.xlabels = []
+    for r in results:
+        myplot.xlabels.append(r[0])
+        
+# Build a list of lists of y values
+# and a list of the labels for each y value
+
+    myplot.ylists =  []
+    myplot.ylistlabels = []
+    
+    for i in range(1,len(column_names)):
+        yl=[]
+        for r in results:
+            val = 100.0 * myplot.nonetozero(r[i])
+            yl.append(val)
+        myplot.ylists.append(yl)
+        myplot.ylistlabels.append(column_names[i])
+
+# Misc labels and names
+
+    myplot.title = database.upper()+' CPU Working Hours '+day.capitalize()+'s'
+    myplot.ylabel1 = 'CPU % Utilization'
+    myplot.yticksuffix = '%'
+    myplot.filename = day.lower()+'.png'
+
+# Run stacked bar graph
+    
+    myplot.stacked_bar()
     
 def onewait():
     # Get user input
@@ -114,16 +145,14 @@ def onewait():
     
     # plot query
         
-    title = "'"+wait_event+"' waits on "+database+" database, minimum waits="+str(min_waits)
-    top_label = "Number of events"
-    bottom_label = "Averaged Elapsed Microseconds"
+    myplot.title = "'"+wait_event+"' waits on "+database+" database, minimum waits="+str(min_waits)
+    myplot.ylabel1 = "Number of events"
+    myplot.ylabel2 = "Averaged Elapsed Microseconds"
     
-    date_time=r[0]
-    num_events=r[1]
-    avg_elapsed=r[2]
+    myplot.xlabels = r[0]
+    myplot.ylists = r[1:]
     
-    myplot.frequency_average(title,top_label,bottom_label,
-                          date_time,num_events,avg_elapsed)
+    myplot.line_2subplots()
                           
 def simplesqlstat():
     # Get user input
@@ -145,16 +174,14 @@ def simplesqlstat():
     
     # plot query
         
-    title = "Sql_id "+sql_id+" on "+database+" database"
-    top_label = "Number of executions"
-    bottom_label = "Averaged Elapsed Milliseconds"
+    myplot.title = "Sql_id "+sql_id+" on "+database+" database"
+    myplot.ylabel1 = "Number of executions"
+    myplot.ylabel2 = "Averaged Elapsed Milliseconds"
     
-    date_time=r[0]
-    executions=r[1]
-    avg_elapsed=r[2]
+    myplot.xlabels = r[0]
+    myplot.ylists = r[1:]
     
-    myplot.frequency_average(title,top_label,bottom_label,
-                          date_time,executions,avg_elapsed)
+    myplot.line_2subplots()
 
 def allsql():
    
@@ -173,16 +200,14 @@ def allsql():
     
     # plot query
         
-    title = "All SQL statements on "+database+" database"
-    top_label = "Number of executions"
-    bottom_label = "Averaged Elapsed Milliseconds"
+    myplot.title = "All SQL statements on "+database+" database"
+    myplot.ylabel1 = "Number of executions"
+    myplot.ylabel2 = "Averaged Elapsed Milliseconds"
     
-    date_time=r[0]
-    executions=r[1]
-    avg_elapsed=r[2]
+    myplot.xlabels = r[0]
+    myplot.ylists = r[1:]
     
-    myplot.frequency_average(title,top_label,bottom_label,
-                          date_time,executions,avg_elapsed)
+    myplot.line_2subplots()
 
 def groupsigs():
 
@@ -220,16 +245,15 @@ def groupsigs():
     
     # plot query
         
-    title = "SQL matching group of signatures on "+database+" database elapsed versus executions"
-    top_label = "Number of executions"
-    bottom_label = "Averaged Elapsed Microseconds"
+    myplot.title = "SQL matching group of signatures on "+database+" database elapsed versus executions"
+    myplot.ylabel1 = "Number of executions"
+    myplot.ylabel2 = "Averaged Elapsed Microseconds"
     
-    date_time=results[0]
-    executions=results[1]
-    avg_elapsed=results[2]
+    myplot.xlabels = results[0]
+    myplot.ylists = results[1:]
     
-    myplot.frequency_average(title,top_label,bottom_label,
-                          date_time,executions,avg_elapsed)
+    myplot.line_2subplots()
+    
 def sigscpuio():
 
     """
@@ -260,16 +284,16 @@ def sigscpuio():
         return
     
     # plot query
-        
-    title = "SQL matching group of signatures on "+database+" database elapsed CPU IO"
-    y_label = "Seconds"
-        
-    number_of_plots=3
     
-    plot_names=["Elapsed","CPU+IO","IO"]
+    myplot.xlabels = results[0]
+    myplot.ylists = results[1:]
+        
+    myplot.title = "SQL matching group of signatures on "+database+" database elapsed CPU IO"
+    myplot.ylabel1 = "Seconds"
+        
+    myplot.ylistlabels=["Elapsed","CPU+IO","IO"]
     
-    myplot.plotmulti(title,y_label,number_of_plots,
-                     plot_names,results)
+    myplot.line()
 
 def sigselapctcpu():
 
@@ -301,16 +325,16 @@ def sigselapctcpu():
         return
     
     # plot query
+
+    myplot.xlabels = results[0]
+    myplot.ylists = results[1:]
         
-    title = "SQL matching group of signatures on "+database+" database elapsed versus cpu"
-    y_label = "Minutes versus Percentage"
+    myplot.title = "SQL matching group of signatures on "+database+" database elapsed versus cpu"
+    myplot.ylabel1 = "Minutes versus Percentage"
         
-    number_of_plots=2
+    myplot.ylistlabels=["CPU % Busy","Elapsed in Minutes"]
     
-    plot_names=["CPU % Busy","Elapsed in Minutes"]
-    
-    myplot.plotmulti(title,y_label,number_of_plots,
-                     plot_names,results)
+    myplot.line()
 
 def sigfour():
 
@@ -342,11 +366,18 @@ def sigfour():
         return
     
     # plot query
+
+    myplot.xlabels = results[0]
+    myplot.ylists = results[1:]
         
-    title = "SQL matching group of signatures on "+database+" database four graphs"
+    myplot.title = "SQL matching group of signatures on "+database+" database four graphs"
             
-    myplot.plot_four(title,"CPU % Busy","Number of executions (/100000)","Average Elapsed Time (microseconds)","Average single block read time (ms)",
-    results[0],results[1],results[2],results[3],results[4])
+    myplot.ylabel1 = "CPU % Busy"
+    myplot.ylabel2 = "Number of executions (/100000)"
+    myplot.ylabel3 = "Average Elapsed Time (microseconds)"
+    myplot.ylabel4 = "Average single block read time (ms)"
+    
+    myplot.line_4subplots()
 
 def ashcount():
 
@@ -375,16 +406,16 @@ def ashcount():
         return
     
     # plot query
-        
-    title = "ASH active session count for "+database+" database"
-    y_label = "Sessions"
-        
-    number_of_plots=2
     
-    plot_names=["Total","CPU"]
+    myplot.xlabels = results[0]
+    myplot.ylists = results[1:]
+        
+    myplot.title = "ASH active session count for "+database+" database"
+    myplot.ylabel1 = "Sessions"
+        
+    myplot.ylistlabels=["Total","CPU"]
     
-    myplot.plotmulti(title,y_label,number_of_plots,
-                     plot_names,results)
+    myplot.line()
 
 parser = argparse.ArgumentParser(description='Create a database performance graph',
                                 epilog="See README for more detailed help.")

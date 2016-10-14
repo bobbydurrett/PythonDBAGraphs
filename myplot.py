@@ -43,6 +43,42 @@ graph_dpi=100
 # set in dbgraphs.py
 
 destination='screen'
+
+"""
+
+Global variables for graph functions
+
+xlabels which is a list of dates in the graphs we have now
+This isn't a list of the values on the x axis but the labels 
+associated with those values.
+
+ylists is a list of lists of yvalues
+
+ylistlabels is a list of lables, one for each member of ylist
+
+title is the graph title
+
+filename is the graph file name - if None it is calculated
+
+ylabel1-4 is the y axis label for subplots 1-4
+
+yticksuffix - added on to the ytick value (% in ashcpu graph)
+
+numticks - number of ticks across x axis
+
+"""
+
+xlabels = []
+ylists = []
+ylistlabels = []
+title = "NOT DEFINED"
+filename = None
+ylabel1 = "NOT DEFINED"
+ylabel2 = "NOT DEFINED"
+ylabel3 = "NOT DEFINED"
+ylabel4 = "NOT DEFINED"
+yticksuffix = None
+numticks = 25
         
 import numpy as np
 import matplotlib.pyplot as plt
@@ -82,179 +118,10 @@ def fileorscreen(filename):
     if destination == 'file':
         graphfile = util.output_dir+filename 
         plt.savefig(graphfile,dpi = (graph_dpi))
- #       plt.close()
         print "Graph is "+graphfile
         x = raw_input("Hit enter to continue")
     elif destination == 'screen':
         plt.show()
-    
-def plot_cpu_by_day(database,day,results,column_names):
-    """
-    Plots database cpu history for a day.
-    """
-       
-    if len(results) == 0:
-        print "No results to graph"
-        return
-    
-    title = database.upper()+' CPU Working Hours '+day.capitalize()+'s'
-    
-# set the screen title, size, density
-    
-    plt.figure(title,graph_dimensions,graph_dpi)
- 
-    number_of_bars = len(results)
-    xvalues = np.arange(number_of_bars)    # the x locations for the groups
-    width = 0.35       # the width of the bars compared with x index
-    
-    # Each level of the bar graph is a plot which is a member of the list
-    # plots. Each plot represents a specific class of machines. Each class
-    # is a different column in the results returned by the query. So there
-    # is one bar plot for each column of the results except the first one 
-    # which is just the date.
-    number_of_columns = len(column_names)
-    plots = []
-    for c in range(1,number_of_columns):
-        # yvalues is the top of the bar for a given color
-        # bottomvals is the bottom of the bar which is stacked
-        # on other bars if not the first one.
-        yvalues=[]
-        bottomvals = []
-        # loop through all of the rows in the result set
-        for r in results:
-            # Use the value for the current column as the top of the bar
-            yvalues.append(100.0*nonetozero(r[c]))
-            # Calculate the value for the bottom of the bar in btemp
-            # Add up previous columns for this row of the result set
-            btemp=0.0
-            for b in range(1,c):
-                btemp += 100.0*nonetozero(r[b])
-            bottomvals.append(btemp)
-        # draw the next color in the stack of bars and save on the plots list
-        p = plt.bar(xvalues, yvalues, width,color=my_colors(c),bottom=bottomvals)
-        plots.append(p)
-
-    plt.ylabel('CPU % Utilization')
-    plt.title(title)
-
-    # xnames is a list of dates based on the first column in the result set
-    xnames = []
-    for row in results:
-        xnames.append(row[0])
-
-    # puts the tick marks and dates as labels under the bars
-    plt.xticks(xvalues + width/2., xnames,rotation=45)
-
-    # The next section of code builds the legend for each bar of 
-    # a given color. The column names are the legend. These represent
-    # a meaningful label for a group of machine names of client machines
-    # that are accessing the database. For example, one label could be
-    # WEBFARM to represent database activity from the web servers.
-    legend_columns = []
-    for c in range(1,len(column_names)):
-        legend_columns.append(column_names[c].replace("'",""))
-
-    plt.legend(plots, legend_columns,loc='upper left')
-    
-    # put up a grid with a y axis
-    
-    plt.grid(axis='y')
-    
-    # this code takes the default labels for the y tick marks
-    # and adds a percent sign (%). The values reprecent percent
-    # cpu utilization but without this code there would be no
-    # % after the number
-    
-    locs,labels = plt.yticks()
-    new_labels = []
-    for l in locs:
-        new_labels.append(str(int(l))+'%')
-        
-    plt.yticks(locs,new_labels)
-    
-    # Produce the image
-    
-    plt.autoscale(tight=True)
-    fileorscreen(day.lower()+'.png')
-    
-    return
-  
-def frequency_average(title,top_label,bottom_label,
-                      date_time,num_events,avg_elapsed):
-    """
-    Creates a split plot with date and time as the x axis and
-    two subplots.
-    
-    The top subplot shows how many time or the relative size of the 
-    thing being plotted. This could be number of wait events, executions
-    seconds of cpu, etc.
-    
-    The bottom subplot is the average per execution. Could be execution time,
-    wait time, cpu time, etc.
-    
-    Inputs:
-        title - title across the top of the plot
-        top_label - y label on top subplot
-        bottom_label - y label on bottom subplot
-        date_time - date and time of sample - list
-        num_events - number of events (waits, etc.) - list
-        avg_elapsed - average elapsed time - list
-    
-    """
-    
-# set the screen title, size, density
-    
-    plt.figure(title,graph_dimensions,graph_dpi)
-
-# cull date and time x ticks down to num_ticks ticks
-# so they fit on the screen
-    num_ticks=25
-    times_per_tick = len(date_time)/num_ticks
-    if times_per_tick < 1:
-        times_per_tick = 1
-    trimmed_date_time=[]
-    for i in range(0,len(date_time)):
-        if i%times_per_tick == 0:
-           trimmed_date_time.append(date_time[i])
-    xtick_locations=range(0,len(date_time),times_per_tick)
-           
-# do the plot
-# top half of the graph plot_number 1
-    nrows = 2
-    ncols = 1
-    plot_number = 1   
-    plt.subplot(nrows,ncols,plot_number)
-    plt.title(title)
-    plt.ylabel(top_label)
-    empty_label_list=[]
-    plt.minorticks_on()
-    plt.xticks(xtick_locations,empty_label_list)
-    plt.grid(which="major")
-    red = 'r'
-    plt.plot(num_events,red)
-# bottom half of the graph plot_number 2
-    plot_number = 2   
-    plt.subplot(nrows,ncols,plot_number)
-    plt.ylabel(bottom_label)
-    plt.minorticks_on()
-    plt.xticks(xtick_locations,trimmed_date_time,rotation=90)
-    plt.grid(which="major")
-    green='g'
-    plt.plot(avg_elapsed,green)
-    
-# subplots_adjust settings
-    vleft  = 0.07  # the left side of the subplots of the figure
-    vright = 0.97    # the right side of the subplots of the figure
-    vbottom = 0.15   # the bottom of the subplots of the figure
-    vtop = 0.95      # the top of the subplots of the figure
-    vwspace = 0.0   # the amount of width reserved for blank space between subplots
-    vhspace = 0.08   # the amount of height reserved for white space between subplots
-
-    plt.subplots_adjust(left=vleft,right=vright,bottom=vbottom,top=vtop,wspace=vwspace,hspace=vhspace)
-    
-    fileorscreen(title+'.png')
-    
-    return
 
 def colorsquares(fixed_color,fixed_value):       
     """
@@ -324,48 +191,130 @@ def colorsquares(fixed_color,fixed_value):
     plt.autoscale(tight=True)
     plt.show()
     
-def plotmulti(title,y_label,number_of_plots,plot_names,timeandplots):
+def trim_x_ticks():
+    """
+    Cull x labels down to num_ticks ticks
+    so they fit on the screen
+    """
+    num_x_labels = len(xlabels)
+    times_per_tick = num_x_labels/numticks
+    if times_per_tick < 1:
+        times_per_tick = 1
+    trimmed_x_labels=[]
+    for i in range(0,num_x_labels):
+        if i%times_per_tick == 0:
+           trimmed_x_labels.append(xlabels[i])
+    xtick_locations=range(0,num_x_labels,times_per_tick)
+    return (trimmed_x_labels,xtick_locations)
+
+def stacked_bar():
+    """
+    Stacked bar graph
+    """
+       
+    if len(xlabels) == 0:
+        print "No results to graph"
+        return
+    
+# set the screen title, size, density
+    
+    plt.figure(title,graph_dimensions,graph_dpi)
+ 
+    number_of_bars = len(xlabels)
+    xvalues = np.arange(number_of_bars)    # the x locations for the groups
+    width = 0.35       # the width of the bars compared with x index
+    
+    number_of_ylists = len(ylists)
+    plots = []
+    for list_num in range(number_of_ylists):
+        # yvalues is the top of the bar for a given color
+        # bottomvals is the bottom of the bar which is stacked
+        # on other bars if not the first one.
+        yvalues=ylists[list_num]
+        bottomvals = []
+        # loop through all of the rows in the result set
+        for bar_num in range(number_of_bars):
+            # Calculate the value for the bottom of the bar in btemp
+            # Add up previous columns for this row of the result set
+            btemp=0.0
+            for list_num_2 in range(list_num):
+                btemp += nonetozero(ylists[list_num_2][bar_num])
+            bottomvals.append(btemp)
+        # draw the next color in the stack of bars and save on the plots list
+        p = plt.bar(xvalues, yvalues, width,color=my_colors(list_num+1),bottom=bottomvals)
+        plots.append(p)
+
+    plt.ylabel(ylabel1)
+    plt.title(title)
+
+    # xnames is a list of dates based on the first column in the result set
+    xnames = xlabels
+
+    # puts the tick marks and dates as labels under the bars
+    plt.xticks(xvalues + width/2., xnames,rotation=45)
+
+    # The next section of code builds the legend for each bar of 
+    # a given color.
+    
+    legend_labels = []
+    for list_num in range(number_of_ylists):
+        legend_labels.append(ylistlabels[list_num].replace("'",""))
+
+    plt.legend(plots,legend_labels,loc='upper left')
+    
+    # put up a grid with a y axis
+    
+    plt.grid(axis='y')
+    
+    # this code takes the default labels for the y tick marks
+    # and adds yticksuffix.
+    
+    if yticksuffix <> None:
+        locs,labels = plt.yticks()
+        new_labels = []
+        for l in locs:
+            new_labels.append(str(int(l))+yticksuffix)
+        
+        plt.yticks(locs,new_labels)
+    
+    # Produce the image
+    
+    plt.autoscale(tight=True)
+    
+    if filename == None:
+        fileorscreen(title+'.png')
+    else:
+        fileorscreen(filename)
+
+    return
+
+def line():
     """
     Creates a single graph with date and time as the x axis and
     a variable number of plots.
-    
-    Inputs:
-        title - title across the top of the plot
-        y_label - y label of plot
-        number_of_plots - number of plots in the graph
-        plot_names - name of each plot - list
-        timeandplots - lists of datetimes, and each plotted value - list
-    
+        
     """
         
 # set the screen title, size, density
     
     plt.figure(title,graph_dimensions,graph_dpi)
     
-    date_time=timeandplots[0]
-
 # cull date and time x ticks down to num_ticks ticks
 # so they fit on the screen
-    num_ticks=25
-    times_per_tick = len(date_time)/num_ticks
-    if times_per_tick < 1:
-        times_per_tick = 1
-    trimmed_date_time=[]
-    for i in range(0,len(date_time)):
-        if i%times_per_tick == 0:
-           trimmed_date_time.append(date_time[i])
-    xtick_locations=range(0,len(date_time),times_per_tick)
+
+    trimmed_x_labels,xtick_locations=trim_x_ticks()
            
 # do the plot
     plt.title(title)
-    plt.ylabel(y_label)
+    plt.ylabel(ylabel1)
     plt.minorticks_on()
-    plt.xticks(xtick_locations,trimmed_date_time,rotation=90)
+    plt.xticks(xtick_locations,trimmed_x_labels,rotation=90)
     plt.grid(which="major")
     
-    for plot_num in range(number_of_plots):
-         plt.plot(timeandplots[plot_num+1],color=my_colors(plot_num))
-    plt.legend(plot_names,loc='upper left')
+    for plot_num in range(len(ylists)):
+         plt.plot(ylists[plot_num],color=my_colors(plot_num))
+         
+    plt.legend(ylistlabels,loc='upper left')
     plt.autoscale(tight=True)
     
     # subplots_adjust settings - single plot so zero space between plots
@@ -381,23 +330,11 @@ def plotmulti(title,y_label,number_of_plots,plot_names,timeandplots):
     fileorscreen(title+'.png')
     
     return    
-
-def plot_four(title,label1,label2,label3,label4,
-                      date_time,plot1,plot2,plot3,plot4):
+  
+def line_2subplots():
     """
-    Four subplots
-    
-    Inputs:
-        title - title across the top of the plot
-        label1 - y label on subplot 1
-        label2 - y label on subplot 2
-        label3 - y label on subplot 3
-        label4 - y label on subplot 4
-        date_time - date and time of sample - list
-        plot1 - plotted values list 1 - list
-        plot2 - plotted values list 1 - list
-        plot3 - plotted values list 1 - list
-        plot4 - plotted values list 1 - list
+    Creates a split plot with one set of x axis labels and
+    two subplots.
     
     """
     
@@ -407,15 +344,62 @@ def plot_four(title,label1,label2,label3,label4,
 
 # cull date and time x ticks down to num_ticks ticks
 # so they fit on the screen
-    num_ticks=25
-    times_per_tick = len(date_time)/num_ticks
-    if times_per_tick < 1:
-        times_per_tick = 1
-    trimmed_date_time=[]
-    for i in range(0,len(date_time)):
-        if i%times_per_tick == 0:
-           trimmed_date_time.append(date_time[i])
-    xtick_locations=range(0,len(date_time),times_per_tick)
+
+    trimmed_x_labels,xtick_locations=trim_x_ticks()
+           
+# do the plot
+# top half of the graph plot_number 1
+    nrows = 2
+    ncols = 1
+    plot_number = 1   
+    plt.subplot(nrows,ncols,plot_number)
+    plt.title(title)
+    plt.ylabel(ylabel1)
+    empty_label_list=[]
+    plt.minorticks_on()
+    plt.xticks(xtick_locations,empty_label_list)
+    plt.grid(which="major")
+    red = 'r'
+    plt.plot(ylists[0],red)
+# bottom half of the graph plot_number 2
+    plot_number = 2   
+    plt.subplot(nrows,ncols,plot_number)
+    plt.ylabel(ylabel2)
+    plt.minorticks_on()
+    plt.xticks(xtick_locations,trimmed_x_labels,rotation=90)
+    plt.grid(which="major")
+    green='g'
+    plt.plot(ylists[1],green)
+    
+# subplots_adjust settings
+    vleft  = 0.07  # the left side of the subplots of the figure
+    vright = 0.97    # the right side of the subplots of the figure
+    vbottom = 0.15   # the bottom of the subplots of the figure
+    vtop = 0.95      # the top of the subplots of the figure
+    vwspace = 0.0   # the amount of width reserved for blank space between subplots
+    vhspace = 0.08   # the amount of height reserved for white space between subplots
+
+    plt.subplots_adjust(left=vleft,right=vright,bottom=vbottom,top=vtop,wspace=vwspace,hspace=vhspace)
+    
+    fileorscreen(title+'.png')
+    
+    return
+    
+
+def line_4subplots():
+    """
+    Four subplots
+        
+    """
+    
+# set the screen title, size, density
+    
+    plt.figure(title,graph_dimensions,graph_dpi)
+
+# cull date and time x ticks down to num_ticks ticks
+# so they fit on the screen
+
+    trimmed_x_labels,xtick_locations=trim_x_ticks()
            
 # do the plot
 # plot_number 1
@@ -424,40 +408,40 @@ def plot_four(title,label1,label2,label3,label4,
     plot_number = 1   
     plt.subplot(nrows,ncols,plot_number)
     plt.title(title)
-    plt.ylabel(label1)
+    plt.ylabel(ylabel1)
     empty_label_list=[]
     plt.minorticks_on()
     plt.xticks(xtick_locations,empty_label_list)
     plt.grid(which="major")
     red = 'r'
-    plt.plot(plot1,red)
+    plt.plot(ylists[0],red)
 # plot_number 2
     plot_number = 2   
     plt.subplot(nrows,ncols,plot_number)
-    plt.ylabel(label2)
+    plt.ylabel(ylabel2)
     plt.minorticks_on()
     plt.xticks(xtick_locations,empty_label_list)
     plt.grid(which="major")
     green='g'
-    plt.plot(plot2,green)
+    plt.plot(ylists[1],green)
 # plot_number 3
     plot_number = 3   
     plt.subplot(nrows,ncols,plot_number)
-    plt.ylabel(label3)
+    plt.ylabel(ylabel3)
     plt.minorticks_on()
-    plt.xticks(xtick_locations,trimmed_date_time,rotation=90)
+    plt.xticks(xtick_locations,trimmed_x_labels,rotation=90)
     plt.grid(which="major")
     blue = 'b'
-    plt.plot(plot3,blue)
+    plt.plot(ylists[2],blue)
 # plot_number 4
     plot_number = 4   
     plt.subplot(nrows,ncols,plot_number)
-    plt.ylabel(label4)
+    plt.ylabel(ylabel4)
     plt.minorticks_on()
-    plt.xticks(xtick_locations,trimmed_date_time,rotation=90)
+    plt.xticks(xtick_locations,trimmed_x_labels,rotation=90)
     plt.grid(which="major")
     yellow='y'
-    plt.plot(plot4,yellow)
+    plt.plot(ylists[3],yellow)
     
 # subplots_adjust settings
     vleft  = 0.07  # the left side of the subplots of the figure

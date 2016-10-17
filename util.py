@@ -27,6 +27,9 @@ Utility functions and global variables
 
 import util
 import sys
+import myplot
+import db
+import argparse
 
 """ 
 
@@ -147,3 +150,35 @@ def input_with_default(prompt,default_value):
     else:
         return entered_value
    
+def script_startup(script_description):
+    util.load_configuration()
+
+# global variable holding database name
+
+    database='ORCL'
+
+    parser = argparse.ArgumentParser(description=script_description,
+                                epilog="See README for more detailed help.")
+    parser.add_argument('destination', choices=['file', 'screen'], 
+                       help='Where to send the graph')
+    parser.add_argument('database',default=None,nargs='?',
+                       help='Name of the database')
+    parser.add_argument('showsql', choices=['Y', 'N'], 
+                       help='Show SQL that was executed (Y or N)')
+    parser.add_argument('showdata', choices=['Y', 'N'], 
+                       help='Show data returned by query (Y or N)')
+                   
+    args = parser.parse_args()
+
+    if args.database <> None:
+        database = args.database.upper()
+    else:
+        database=util.input_with_default('database','ORCL')
+
+    myplot.destination = args.destination
+    db.showsql = args.showsql
+    db.showdata = args.showdata
+    
+    user=util.my_oracle_user
+    password=util.get_oracle_password(database)
+    return database,db.connection(user,password,database)

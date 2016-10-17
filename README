@@ -5,70 +5,65 @@ are helpful for Oracle database performance tuning.
 
 PythonDBAGraphs includes these graphs:
 
-ashcpu - Shows cpu usage within an Oracle database
-         by various parts of the application.
+ashcpu.py - Shows cpu usage within an Oracle database
+            by various parts of the application.
 
-onewait - Shows the average time for an Oracle wait
-          event and the number of events per period.
+onewait.py - Shows the average time for an Oracle wait
+             event and the number of events per period.
           
-simplesqlstat - Show average elapsed versus executions
-                for one SQL statement.
+simplesqlstat.py - Show average elapsed versus executions
+                   for one SQL statement.
 
-allsql - Show average elapsed versus executions
-         for all SQL statements.
+allsql.py - Show average elapsed versus executions
+            for all SQL statements.
          
-groupsigs - Show average elapsed versus executions
-            for SQL statements whose force matching
-            signature is in a specified group of
-            signatures.
+groupsigs.py - Show average elapsed versus executions
+               for SQL statements whose force matching
+               signature is in a specified group of
+               signatures.
           
-sigscpuio - Show total elapsed, CPU, and IO time
-            for SQL statements whose force matching
-            signature is in a specified group of
-            signatures.
+sigscpuio.py - Show total elapsed, CPU, and IO time
+               for SQL statements whose force matching
+               signature is in a specified group of
+               signatures.
 
-sigselapctcpu - Show total elapsed for SQL statements 
-                whose force matching signature is in a 
-                specified group of signatures. Show 
-                percent CPU used on same graph.
+sigselapctcpu.py - Show total elapsed for SQL statements 
+                   whose force matching signature is in a 
+                   specified group of signatures. Show 
+                   percent CPU used on same graph.
 
-sigfour - Four metrics for SQL statements 
-          whose force matching signature is in a 
-          specified group of signatures. These are
-          number of executions, average elapsed time,
-          CPU percent used, and average single block
-          read time.
+sigfour.py - Four metrics for SQL statements 
+             whose force matching signature is in a 
+             specified group of signatures. These are
+             number of executions, average elapsed time,
+             CPU percent used, and average single block
+             read time.
           
-ashcount - For a time range show the number of active
-           sessions on CPU and total number active.
+ashcount.py - For a time range show the number of active
+              sessions on CPU and total number active.
           
 Command line help:
 
-usage: dbgraphs.py [-h]
+usage: ashcpu.py [-h] {file,screen} [database] {Y,N} {Y,N}
 
-                   {ashcpu,onewait,simplesqlstat,allsql,groupsigs,sigscpuio,sigselapctcpu,sigfour,ashcount}
-                   {file,screen} [database] {Y,N} {Y,N}
-
-Create a database performance graph
+Database CPU by Application Area
 
 positional arguments:
-  {ashcpu,onewait,simplesqlstat,allsql,groupsigs,sigscpuio,sigselapctcpu,sigfour,ashcount}
-                        Name of report
-  {file,screen}         Where to send the graph
-  database              Name of the database
-  {Y,N}                 Show SQL that was executed (Y or N)
-  {Y,N}                 Show data returned by query (Y or N)
+  {file,screen}  Where to send the graph
+  database       Name of the database
+  {Y,N}          Show SQL that was executed (Y or N)
+  {Y,N}          Show data returned by query (Y or N)
 
 optional arguments:
-  -h, --help            show this help message and exit
+  -h, --help     show this help message and exit
 
 See README for more detailed help.
 
 Example:
 
-python dbgraphs.py onewait screen ORCL N N
+python onewait.py screen ORCL N N
 
-This creates the onewait graph on the ORCL database and sends the output to 
+This creates the onewait.py graph on the ORCL database and sends the output to 
 the screen. It does not display the SQL used and it does not output the
 data returned by the query.
 

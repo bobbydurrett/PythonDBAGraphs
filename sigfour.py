@@ -26,13 +26,13 @@ and average single block IO time.
 
 """
 
-import perfq
+import signatures
 import myplot
 import util
 
 database,dbconnection = util.script_startup('SQL statments by signature four plots')
 
-queryobj = perfq.groupofsignatures()
+queryobj = signatures.groupofsignatures()
 
 lines = util.read_config_file(util.config_dir,database+util.groupsigs_file)
 

@@ -29,16 +29,15 @@ that we care about such as the main queries the users use every day and
 show their performance over time. It does hide the details of the individual
 queries but may have value if we choose the best set of signatures.   
 
-
 """
 
-import perfq
 import myplot
 import util
+import signatures
 
 database,dbconnection = util.script_startup('Stats for SQL statments by signature')
 
-queryobj = perfq.groupofsignatures()
+queryobj = signatures.groupofsignatures()
 
 lines = util.read_config_file(util.config_dir,database+util.groupsigs_file)
 

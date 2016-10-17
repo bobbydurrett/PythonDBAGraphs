@@ -25,9 +25,30 @@ Graph of one wait event
 
 """
 
-import perfq
 import myplot
 import util
+        
+def onewait(wait_event,minimum_waits):
+    q_string = """
+select to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+(after.total_waits-before.total_waits) NUMBER_OF_WAITS,
+(after.time_waited_micro-before.time_waited_micro)/(after.total_waits-before.total_waits) AVG_MICROSECONDS
+from DBA_HIST_SYSTEM_EVENT before, DBA_HIST_SYSTEM_EVENT after,DBA_HIST_SNAPSHOT sn
+where before.event_name='""" 
+    q_string += wait_event
+    q_string += """' and
+after.event_name=before.event_name and
+after.snap_id=before.snap_id+1 and
+after.instance_number=1 and
+before.instance_number=after.instance_number and
+after.snap_id=sn.snap_id and
+after.instance_number=sn.instance_number and
+(after.total_waits-before.total_waits) > """
+    q_string += str(minimum_waits)
+    q_string += """
+order by after.snap_id
+"""
+    return q_string
 
 database,dbconnection = util.script_startup('One wait event')
 
@@ -38,7 +59,7 @@ min_waits=int(util.input_with_default('minimum number of waits per hour','0'))
 
 # Build and run query
 
-q = perfq.onewait(wait_event,min_waits);
+q = onewait(wait_event,min_waits);
 
 r = dbconnection.run_return_flipped_results(q)
 

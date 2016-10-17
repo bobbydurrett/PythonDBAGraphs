@@ -26,13 +26,13 @@ on their signatures against percent CPU of the host.
 
 """
 
-import perfq
 import myplot
 import util
+import signatures
 
 database,dbconnection = util.script_startup('SQL statments by signature Elapsed and CPU')
 
-queryobj = perfq.groupofsignatures()
+queryobj = signatures.groupofsignatures()
 
 lines = util.read_config_file(util.config_dir,database+util.groupsigs_file)
 

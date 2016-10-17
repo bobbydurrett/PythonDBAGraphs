@@ -25,9 +25,24 @@ Execution statistics for one SQL statement
 
 """
 
-import perfq
 import myplot
 import util
+
+def simplesqlstat(sql_id):
+    q_string = """
+select 
+to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+ss.executions_delta,
+ELAPSED_TIME_DELTA/(executions_delta*1000) ELAPSED_AVG_MS
+from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
+where ss.sql_id = '""" 
+    q_string += sql_id
+    q_string += """'
+and ss.snap_id=sn.snap_id
+and executions_delta > 0
+and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
+order by ss.snap_id,ss.sql_id"""
+    return q_string
 
 database,dbconnection = util.script_startup('Run statistics for one SQL id')
 
@@ -35,7 +50,7 @@ database,dbconnection = util.script_startup('Run statistics for one SQL id')
 
 sql_id=util.input_with_default('SQL_ID','acrg0q0qtx3gr')
 
-q = perfq.simplesqlstat(sql_id);
+q = simplesqlstat(sql_id);
 
 r = dbconnection.run_return_flipped_results(q)
 

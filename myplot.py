@@ -318,7 +318,7 @@ def line():
     plt.autoscale(tight=True)
     
     # subplots_adjust settings - single plot so zero space between plots
-    vleft  = 0.05  # the left side of the subplots of the figure
+    vleft  = 0.06  # the left side of the subplots of the figure
     vright = 0.97    # the right side of the subplots of the figure
     vbottom = 0.12   # the bottom of the subplots of the figure
     vtop = 0.95      # the top of the subplots of the figure

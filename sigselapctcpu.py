@@ -44,9 +44,7 @@ querytext = queryobj.build_query3()
 
 results = dbconnection.run_return_flipped_results(querytext)
 
-if results == None:
-    print "No results returned"
-    exit
+util.exit_no_results(results)
 
 # plot query
 

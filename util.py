@@ -182,3 +182,8 @@ def script_startup(script_description):
     user=util.my_oracle_user
     password=util.get_oracle_password(database)
     return database,db.connection(user,password,database)
+
+def exit_no_results(results):
+    if results == None:
+        print "No results returned"
+        sys.exit()

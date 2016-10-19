@@ -118,6 +118,7 @@ def fileorscreen(filename):
     if destination == 'file':
         graphfile = util.output_dir+filename 
         plt.savefig(graphfile,dpi = (graph_dpi))
+        plt.close('All')
         print "Graph is "+graphfile
         x = raw_input("Hit enter to continue")
     elif destination == 'screen':

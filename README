@@ -44,6 +44,8 @@ ashcount.py - For a time range show the number of active
               
 sqlstatwithplans.py - Show execution time of a single 
                       SQL statement by plan.
+                      
+sessioncounts.py - Plot the number of connected sessions.
           
 Command line help:
 

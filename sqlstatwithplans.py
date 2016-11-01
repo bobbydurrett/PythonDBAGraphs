@@ -48,7 +48,7 @@ database,dbconnection = util.script_startup('Graph execution time by plan')
 
 # Get user input
 
-sql_id=util.input_with_default('SQL_ID','acrg0q0qtx3gr')
+sql_id=util.input_with_default('SQL_ID','dkqs29nsj23jq')
 
 mainquery = sqlstatwithplans(sql_id)
 
@@ -61,37 +61,54 @@ plan_hash_values = mainresults[1]
 elapsed_times = mainresults[2]
 num_rows = len(date_times)
 
-# build list of distict plan hash values
+"""
+
+There are multiple rows for a given date and time.
+Build list of distinct date times and build a list of
+the same length for each plan. Initialize plan lists
+with 0.0. Later we will loop through every row updating
+the entrees for a given plan and date.
+
+"""
+
+# build list of distinct plan hash values
 
 distinct_plans = []
 for phv in plan_hash_values:
     string_phv = str(phv)
     if string_phv not in distinct_plans:
         distinct_plans.append(string_phv)
-        
-# build a list of elapsed times by plan
 
-# create list with num plans empty lists     
+# build list of distinct date times
+
+distinct_date_times = []
+for dt in date_times:
+    if dt not in distinct_date_times:
+        distinct_date_times.append(dt)
+          
+# create list with empty list for each plan    
                         
 elapsed_by_plan = []
 for p in distinct_plans:
     elapsed_by_plan.append([])
+
+# insert zeros for len(distinct_date_times) entries for each
+# plan's list.
+
+for ddt in distinct_date_times:
+    for elist in elapsed_by_plan:
+        elist.append(0.0)
     
-# update an entry for every plan 
-# None for ones that aren't
-# in the row
+# update an entry for each row.
 
 for i in range(num_rows):
+    date_index = distinct_date_times.index(date_times[i])
     plan_num = distinct_plans.index(str(plan_hash_values[i]))
-    for p in range(len(distinct_plans)):
-        if p == plan_num:
-            elapsed_by_plan[p].append(elapsed_times[i])
-        else:
-            elapsed_by_plan[p].append(None)
+    elapsed_by_plan[plan_num][date_index] = elapsed_times[i]
             
 # plot query
     
-myplot.xlabels = date_times
+myplot.xlabels = distinct_date_times
 myplot.ylists = elapsed_by_plan
 
 myplot.title = "Sql_id "+sql_id+" on "+database+" database with plans"

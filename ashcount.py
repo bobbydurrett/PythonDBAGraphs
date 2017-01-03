@@ -35,7 +35,7 @@ def ashcputotal(start_time,end_time):
     """
     q_string = """
 select
-to_char(all_time.sample_time,'MM/DD HH24:MI'),
+substr(to_char(all_time.sample_time,'YY/MM/DD HH24:MI'),4),
 sum(all_time.cnt)/6 all_count,
 sum(nvl(cpu_time.cnt,0))/6 cpu_count
 from
@@ -72,8 +72,8 @@ session_state = 'ON CPU'
 group by sample_time) cpu_time
 where
 all_time.sample_time=cpu_time.sample_time(+)
-group by to_char(all_time.sample_time,'MM/DD HH24:MI')
-order by to_char(all_time.sample_time,'MM/DD HH24:MI')
+group by to_char(all_time.sample_time,'YY/MM/DD HH24:MI')
+order by to_char(all_time.sample_time,'YY/MM/DD HH24:MI')
 """
     return q_string
 

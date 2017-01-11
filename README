@@ -46,6 +46,8 @@ sqlstatwithplans.py - Show execution time of a single
                       SQL statement by plan.
                       
 sessioncounts.py - Plot the number of connected sessions.
+
+segstat.py - Segment usage statistics for one segment
           
 Command line help:
 

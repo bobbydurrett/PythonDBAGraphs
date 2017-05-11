@@ -184,4 +184,15 @@ class connection:
                list_output[i].append(curr_row[i])
 
         return list_output
+    def run_return_no_results_catch_error(self,non_query):
+        """ 
+        Catch error in run_return_no_results
+        """
+        try:
+            self.run_return_no_results(non_query)
+        except cx_Oracle.DatabaseError:
+            pass
+        
+        return
+
 

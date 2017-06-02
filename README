@@ -76,12 +76,47 @@ data returned by the query.
 
 Requirements:
 
-This has been primarily tested on Windows 7 using 32-bit
-Canopy Express and the cx_Oracle package.
+The author primarily uses this application in the following environment:
 
-https://www.enthought.com/canopy-express/
+Windows 7
 
-https://pypi.python.org/pypi/cx_Oracle/5.2.1
+32 bit Python 3.6.1
+
+These packages:
+
+cx-Oracle (6.0b2)
+cycler (0.10.0)
+matplotlib (2.0.2)
+numpy (1.12.1)
+pip (9.0.1)
+pyparsing (2.2.0)
+python-dateutil (2.6.0)
+pytz (2017.2)
+setuptools (28.8.0)
+six (1.10.0)
+wxPython (4.0.0a2)
+
+I had to do the following steps to configure Matplotlib to use wxPython:
+
+Download s.py from this URL:
+
+https://gist.github.com/bobbydurrett/a65c9c457f155a0ed38a9643b05ce8f5#file-s-py
+
+Run this command:
+
+python s.py --verbose-helpful 
+
+Output includes a line like this:
+
+loaded rc file C:\Users\myuser\AppData\Local\Programs\Python\Python36-32\lib\site-packages\matplotlib\mpl-data\matplotlibrc
+
+I edited the matplotlibrc to use wx by setting backend to WXAgg. Here is the diff from the original matplotlibrc:
+
+diff matplotlibrc.original matplotlibrc
+38c38
+< backend      : TkAgg
+---
+> backend      : WXAgg
 
 Configuration:
 
@@ -108,42 +143,4 @@ http://www.bobbydurrettdba.com/?s=Python
 Contact:
 
 bobby@bobbydurrettdba.com
-
-Linux configuration:
-
-Recently tested this on Linux virtual machine following this high level outline:
-
-Here are the steps to use PythonDBAGraphs on Linux. Tested on Oracle Enterprise
-Linux, a variant of Red Hat.
-
-1 Install Oracle linux 6 as software development workstation.
-Run yum update to get current.
-
-2 Install Oracle 11.2.0.4 client using database server yum package. Setup the 
-needed Oracle directories. Setup tnsnames.ora entry for test database
-and test connection with sqlplus.
-
-3 Use yum to install tcl* and tk*
-
-4 Build python 2.7.11 from source and install.
-
-5 Build matplotlib from source and install.
-Set backend to tkagg in matplotlibrc. Use
-
-python s.py --verbose-helpful 
-
-to find the rc file.
-
-s.py:
-
-https://gist.github.com/bobbydurrett/a65c9c457f155a0ed38a9643b05ce8f5#file-s-py
-
-6 Build numpy from source and install.
-
-7 Build cx_Oracle from source and install.
-
-8 Clone PythonDBAGraphs repository using git.
-
-9 Test application. Setup configuration files
-to use SYSTEM user and Linux file paths.
 

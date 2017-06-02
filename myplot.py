@@ -117,7 +117,7 @@ def fileorscreen(filename):
     if destination == 'file':
         graphfile = util.output_dir+filename 
         plt.savefig(graphfile,dpi = (graph_dpi))
-        plt.close('All')
+        plt.close('all')
         print("Graph is "+graphfile)
         x = input("Hit enter to continue")
     elif destination == 'screen':
@@ -241,7 +241,7 @@ def stacked_bar():
                 btemp += nonetozero(ylists[list_num_2][bar_num])
             bottomvals.append(btemp)
         # draw the next color in the stack of bars and save on the plots list
-        p = plt.bar(xvalues, yvalues, width,color=my_colors(list_num+1),bottom=bottomvals,edgecolor='k',linewidth=1.0,linestyle='solid')
+        p = plt.bar(xvalues, yvalues, width,color=my_colors(list_num+1),bottom=bottomvals,edgecolor='k',linewidth=0.5,linestyle='solid')
         plots.append(p)
 
     plt.ylabel(ylabel1)
@@ -251,7 +251,6 @@ def stacked_bar():
     xnames = xlabels
 
     # puts the tick marks and dates as labels under the bars
-#    plt.xticks(xvalues + width/2., xnames,rotation=45)
     plt.xticks(xvalues,xnames,rotation=45)
 
     # The next section of code builds the legend for each bar of 

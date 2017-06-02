@@ -27,16 +27,15 @@ My plotting routines
 
 """
 
-Dimensions for a graph. Corresponds to 1920x1080.
+Dimensions for a graph. Corresponds to 1600x900.
 A change here to affect all graphs. 
 
 graph_dimensions is supposed to be in inches and
-graph_dpi is dots per inch. Chose these to multiply
-to 1920x1080 for HD monitor.
+graph_dpi is dots per inch. 
 
 """
 
-graph_dimensions=(19.2,10.8)
+graph_dimensions=(16,9)
 graph_dpi=100
 
 # destination is where the graph will go - screen or file
@@ -242,7 +241,7 @@ def stacked_bar():
                 btemp += nonetozero(ylists[list_num_2][bar_num])
             bottomvals.append(btemp)
         # draw the next color in the stack of bars and save on the plots list
-        p = plt.bar(xvalues, yvalues, width,color=my_colors(list_num+1),bottom=bottomvals)
+        p = plt.bar(xvalues, yvalues, width,color=my_colors(list_num+1),bottom=bottomvals,edgecolor='k',linewidth=1.0,linestyle='solid')
         plots.append(p)
 
     plt.ylabel(ylabel1)
@@ -383,6 +382,8 @@ def line_2subplots():
 
     plt.subplots_adjust(left=vleft,right=vright,bottom=vbottom,top=vtop,wspace=vwspace,hspace=vhspace)
     
+    plt.autoscale(tight=True)
+   
     fileorscreen(title+'.png')
     
     return

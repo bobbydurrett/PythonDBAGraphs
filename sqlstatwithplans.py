@@ -33,7 +33,7 @@ def sqlstatwithplans(sql_id):
 select 
 to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
 plan_hash_value,
-ELAPSED_TIME_DELTA/(executions_delta*1000000) ELAPSED_AVG_SEC
+to_char(ELAPSED_TIME_DELTA/(executions_delta*1000000)) ELAPSED_AVG_SEC
 from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
 where ss.sql_id = '""" 
     q_string += sql_id

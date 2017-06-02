@@ -48,10 +48,10 @@ class connection:
         try:
             self.con = cx_Oracle.connect(connect_string)
         except cx_Oracle.DatabaseError as e:
-            print "Error logging in: "+str(e.args[0])
-            print "Username: "+username
-            print "Password: "+password
-            print "Database: "+database
+            print("Error logging in: "+str(e.args[0]))
+            print("Username: "+username)
+            print("Password: "+password)
+            print("Database: "+database)
             sys.exit(-1)
         self.cur = self.con.cursor()
         self.column_names=[]
@@ -93,14 +93,14 @@ class connection:
         column_name_header=""
         for cn in range(num_columns):
             column_name_header += column_names[cn].rjust(max_lengths[cn]) + " "
-        print column_name_header
+        print(column_name_header)
             
 # Print data with same padding
         for d in data_list:
             data_line=""
             for cn in range(num_columns):
                 data_line += str(d[cn]).rjust(max_lengths[cn]) + " "
-            print data_line
+            print(data_line)
         
     def run_return_all_results(self,query):
         """ 
@@ -109,7 +109,7 @@ class connection:
         Each tuple contains one row of query output.
         """
         if showsql == 'Y':
-            print query
+            print(query)
             
         self.cur.execute(query)
         
@@ -142,7 +142,7 @@ class connection:
         a query.
         """
         if showsql == 'Y':
-            print non_query
+            print(non_query)
 
         self.cur.execute(non_query)
         return

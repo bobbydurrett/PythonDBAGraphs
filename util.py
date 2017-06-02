@@ -68,19 +68,19 @@ def get_source_dir():
 def read_config_file(directory,file_name):
     CFG_FILE = directory+file_name
     try:
-        inFile = open(CFG_FILE, 'r', 0)
+        inFile = open(CFG_FILE, 'r')
     except IOError as e:
         if e.strerror == 'No such file or directory':
             source_dir = get_source_dir()
-            print "File:"
-            print CFG_FILE
-            print "not found."
-            print ""
-            print "Please copy "+file_name+" from"
-            print source_dir+"configfiletemplates"
-            print "to"
-            print directory
-            print "and edit with your information."
+            print("File:")
+            print(CFG_FILE)
+            print("not found.")
+            print("")
+            print("Please copy "+file_name+" from")
+            print(source_dir+"configfiletemplates")
+            print("to")
+            print(directory)
+            print("and edit with your information.")
             sys.exit()
         else:
             raise e
@@ -132,19 +132,19 @@ def get_oracle_password(database):
     lines = read_config_file(util.password_dir,util.password_file)
     # look for specific database first
     for oneline in lines:
-        if len(oneline) > 0 and oneline[0] <> '#':
+        if len(oneline) > 0 and oneline[0] != '#':
             fields = oneline.split(':')
             if fields[0].upper() == database.upper() and fields[1].upper() == util.my_oracle_user.upper():
                 return fields[2]
     # look for ALLDBS indicating same password all databases
     for oneline in lines:
-        if len(oneline) > 0 and oneline[0] <> '#':
+        if len(oneline) > 0 and oneline[0] != '#':
             fields = oneline.split(':')
             if fields[0].upper() == 'ALLDBS' and fields[1].upper() == util.my_oracle_user.upper():
                 return fields[2]
     
 def input_with_default(prompt,default_value):
-    entered_value = raw_input('Enter '+prompt+' or press enter for default ('+default_value+'): ')
+    entered_value = input('Enter '+prompt+' or press enter for default ('+default_value+'): ')
     if entered_value == "":
         return default_value
     else:
@@ -170,7 +170,7 @@ def script_startup(script_description):
                    
     args = parser.parse_args()
 
-    if args.database <> None:
+    if args.database != None:
         database = args.database.upper()
     else:
         database=util.input_with_default('database','ORCL')
@@ -185,5 +185,5 @@ def script_startup(script_description):
 
 def exit_no_results(results):
     if results == None:
-        print "No results returned"
+        print("No results returned")
         sys.exit()

@@ -33,7 +33,7 @@ def simplesqlstat(sql_id):
 select 
 to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
 ss.executions_delta,
-ELAPSED_TIME_DELTA/(executions_delta*1000) ELAPSED_AVG_MS
+to_char(ELAPSED_TIME_DELTA/(executions_delta*1000)) ELAPSED_AVG_MS
 from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
 where ss.sql_id = '""" 
     q_string += sql_id
@@ -59,6 +59,8 @@ r = dbconnection.run_return_flipped_results(q)
 myplot.title = "Sql_id "+sql_id+" on "+database+" database"
 myplot.ylabel1 = "Number of executions"
 myplot.ylabel2 = "Averaged Elapsed Milliseconds"
+
+util.exit_no_results(r)
 
 myplot.xlabels = r[0]
 myplot.ylists = r[1:]

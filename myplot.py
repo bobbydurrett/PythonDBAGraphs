@@ -119,8 +119,8 @@ def fileorscreen(filename):
         graphfile = util.output_dir+filename 
         plt.savefig(graphfile,dpi = (graph_dpi))
         plt.close('All')
-        print "Graph is "+graphfile
-        x = raw_input("Hit enter to continue")
+        print("Graph is "+graphfile)
+        x = input("Hit enter to continue")
     elif destination == 'screen':
         plt.show()
 
@@ -139,11 +139,11 @@ def colorsquares(fixed_color,fixed_value):
     """
 
     if fixed_color not in ['r','g','b']:
-        print "Fixed color must be r, g, or b"
+        print("Fixed color must be r, g, or b")
         return
     
     if fixed_value < 0.0 or fixed_value > 1.0:
-        print "Fixed color value must be between 0.0 and 1.0"
+        print("Fixed color value must be between 0.0 and 1.0")
         return
     
     inc = 0.1
@@ -198,7 +198,7 @@ def trim_x_ticks():
     so they fit on the screen
     """
     num_x_labels = len(xlabels)
-    times_per_tick = num_x_labels/numticks
+    times_per_tick = int(num_x_labels/numticks)
     if times_per_tick < 1:
         times_per_tick = 1
     trimmed_x_labels=[]
@@ -214,7 +214,7 @@ def stacked_bar():
     """
        
     if len(xlabels) == 0:
-        print "No results to graph"
+        print("No results to graph")
         return
     
 # set the screen title, size, density
@@ -252,7 +252,8 @@ def stacked_bar():
     xnames = xlabels
 
     # puts the tick marks and dates as labels under the bars
-    plt.xticks(xvalues + width/2., xnames,rotation=45)
+#    plt.xticks(xvalues + width/2., xnames,rotation=45)
+    plt.xticks(xvalues,xnames,rotation=45)
 
     # The next section of code builds the legend for each bar of 
     # a given color.
@@ -270,7 +271,7 @@ def stacked_bar():
     # this code takes the default labels for the y tick marks
     # and adds yticksuffix.
     
-    if yticksuffix <> None:
+    if yticksuffix != None:
         locs,labels = plt.yticks()
         new_labels = []
         for l in locs:

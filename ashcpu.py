@@ -305,7 +305,7 @@ class day_history:
 
 database,dbconnection = util.script_startup('Database CPU by Application Area')
 
-day=input('Enter day of week: ')
+day=util.input_no_default('Enter day of week: ')
     
 user=util.my_oracle_user
  

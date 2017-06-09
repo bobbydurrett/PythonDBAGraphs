@@ -144,11 +144,21 @@ def get_oracle_password(database):
                 return fields[2]
     
 def input_with_default(prompt,default_value):
-    entered_value = input('Enter '+prompt+' or press enter for default ('+default_value+'): ')
+    if sys.version_info.major < 3:
+        entered_value = raw_input('Enter '+prompt+' or press enter for default ('+default_value+'): ')
+    else:
+        entered_value = input('Enter '+prompt+' or press enter for default ('+default_value+'): ')
     if entered_value == "":
         return default_value
     else:
         return entered_value
+
+def input_no_default(prompt):
+    if sys.version_info.major < 3:
+        entered_value = raw_input(prompt)
+    else:
+        entered_value = input(prompt)
+    return entered_value
    
 def script_startup(script_description):
     util.load_configuration()

@@ -47,9 +47,12 @@ destination='screen'
 
 Global variables for graph functions
 
-xlabels which is a list of dates in the graphs we have now
+xlabels is a list of dates in the graphs.
 This isn't a list of the values on the x axis but the labels 
 associated with those values.
+
+xdatetimes is a list of dates and times
+which form the x axis values for the graphs.
 
 ylists is a list of lists of yvalues
 
@@ -67,6 +70,7 @@ numticks - number of ticks across x axis
 
 """
 
+xdatetimes = []
 xlabels = []
 ylists = []
 ylistlabels = []
@@ -81,6 +85,7 @@ numticks = 25
         
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import util
    
 def my_colors(colornum):
@@ -297,22 +302,27 @@ def line():
         
 # set the screen title, size, density
     
-    plt.figure(title,graph_dimensions,graph_dpi)
-    
-# cull date and time x ticks down to num_ticks ticks
-# so they fit on the screen
-
-    trimmed_x_labels,xtick_locations=trim_x_ticks()
-           
+    fig = plt.figure(title,graph_dimensions,graph_dpi)
+               
 # do the plot
     plt.title(title)
     plt.ylabel(ylabel1)
-    plt.minorticks_on()
-    plt.xticks(xtick_locations,trimmed_x_labels,rotation=90)
     plt.grid(which="major")
     
     for plot_num in range(len(ylists)):
-         plt.plot(ylists[plot_num],color=my_colors(plot_num))
+         plt.plot(xdatetimes,ylists[plot_num],color=my_colors(plot_num))
+
+# date time formatting
+
+    ax = plt.axes()
+    fig.autofmt_xdate()
+    ax.fmt_xdata = mdates.DateFormatter('%m/%d/%Y %H:%M')
+    loc=mdates.AutoDateLocator()
+    datetimefmt = mdates.AutoDateFormatter(loc)
+    ax.xaxis.set_major_formatter(datetimefmt)
+    ax.xaxis.set_major_locator(loc)
+
+# other formatting
          
     plt.legend(ylistlabels,loc='upper left')
     plt.autoscale(tight=True)
@@ -337,54 +347,56 @@ def line_2subplots():
     two subplots.
     
     """
-    
+        
 # set the screen title, size, density
     
-    plt.figure(title,graph_dimensions,graph_dpi)
+    fig = plt.figure(title,graph_dimensions,graph_dpi)
 
-# cull date and time x ticks down to num_ticks ticks
-# so they fit on the screen
-
-    trimmed_x_labels,xtick_locations=trim_x_ticks()
-           
 # do the plot
 # top half of the graph plot_number 1
     nrows = 2
     ncols = 1
     plot_number = 1   
-    plt.subplot(nrows,ncols,plot_number)
+    ax = plt.subplot(nrows,ncols,plot_number)
     plt.title(title)
     plt.ylabel(ylabel1)
-    empty_label_list=[]
-    plt.minorticks_on()
-    plt.xticks(xtick_locations,empty_label_list)
     plt.grid(which="major")
     red = 'r'
-    plt.plot(ylists[0],red)
+    plt.plot(xdatetimes,ylists[0],red)
+    plt.autoscale(tight=True)
+    fig.autofmt_xdate()
+    ax.fmt_xdata = mdates.DateFormatter('%m/%d/%Y %H:%M')
+    datetimefmt = mdates.DateFormatter('')
+    ax.xaxis.set_major_formatter(datetimefmt)
 # bottom half of the graph plot_number 2
     plot_number = 2   
-    plt.subplot(nrows,ncols,plot_number)
+    ax = plt.subplot(nrows,ncols,plot_number)
     plt.ylabel(ylabel2)
-    plt.minorticks_on()
-    plt.xticks(xtick_locations,trimmed_x_labels,rotation=90)
     plt.grid(which="major")
     green='g'
-    plt.plot(ylists[1],green)
+    plt.plot(xdatetimes,ylists[1],green)
+    plt.autoscale(tight=True)
+    fig.autofmt_xdate()
+    ax.fmt_xdata = mdates.DateFormatter('%m/%d/%Y %H:%M')
+    loc=mdates.AutoDateLocator()
+    datetimefmt = mdates.AutoDateFormatter(loc)
+    ax.xaxis.set_major_formatter(datetimefmt)
+    ax.xaxis.set_major_locator(loc)
     
 # subplots_adjust settings
     vleft  = 0.07  # the left side of the subplots of the figure
     vright = 0.97    # the right side of the subplots of the figure
-    vbottom = 0.15   # the bottom of the subplots of the figure
+#    vbottom = 0.15   # the bottom of the subplots of the figure
+    vbottom = 0.10   # the bottom of the subplots of the figure
     vtop = 0.95      # the top of the subplots of the figure
     vwspace = 0.0   # the amount of width reserved for blank space between subplots
     vhspace = 0.08   # the amount of height reserved for white space between subplots
 
     plt.subplots_adjust(left=vleft,right=vright,bottom=vbottom,top=vtop,wspace=vwspace,hspace=vhspace)
     
-    plt.autoscale(tight=True)
-   
+
     fileorscreen(title+'.png')
-    
+       
     return
     
 
@@ -396,59 +408,69 @@ def line_4subplots():
     
 # set the screen title, size, density
     
-    plt.figure(title,graph_dimensions,graph_dpi)
+    fig = plt.figure(title,graph_dimensions,graph_dpi)
 
-# cull date and time x ticks down to num_ticks ticks
-# so they fit on the screen
-
-    trimmed_x_labels,xtick_locations=trim_x_ticks()
-           
 # do the plot
 # plot_number 1
     nrows = 2
     ncols = 2
     plot_number = 1   
-    plt.subplot(nrows,ncols,plot_number)
+    ax = plt.subplot(nrows,ncols,plot_number)
     plt.title(title)
     plt.ylabel(ylabel1)
-    empty_label_list=[]
-    plt.minorticks_on()
-    plt.xticks(xtick_locations,empty_label_list)
     plt.grid(which="major")
     red = 'r'
-    plt.plot(ylists[0],red)
+    plt.plot(xdatetimes,ylists[0],red)
+    plt.autoscale(tight=True)
+    fig.autofmt_xdate()
+    ax.fmt_xdata = mdates.DateFormatter('%m/%d/%Y %H:%M')
+    datetimefmt = mdates.DateFormatter('')
+    ax.xaxis.set_major_formatter(datetimefmt)
 # plot_number 2
     plot_number = 2   
-    plt.subplot(nrows,ncols,plot_number)
+    ax = plt.subplot(nrows,ncols,plot_number)
     plt.ylabel(ylabel2)
-    plt.minorticks_on()
-    plt.xticks(xtick_locations,empty_label_list)
     plt.grid(which="major")
     green='g'
-    plt.plot(ylists[1],green)
+    plt.plot(xdatetimes,ylists[1],green)
+    plt.autoscale(tight=True)
+    fig.autofmt_xdate()
+    ax.fmt_xdata = mdates.DateFormatter('%m/%d/%Y %H:%M')
+    datetimefmt = mdates.DateFormatter('')
+    ax.xaxis.set_major_formatter(datetimefmt)
 # plot_number 3
     plot_number = 3   
-    plt.subplot(nrows,ncols,plot_number)
+    ax = plt.subplot(nrows,ncols,plot_number)
     plt.ylabel(ylabel3)
-    plt.minorticks_on()
-    plt.xticks(xtick_locations,trimmed_x_labels,rotation=90)
     plt.grid(which="major")
     blue = 'b'
-    plt.plot(ylists[2],blue)
+    plt.plot(xdatetimes,ylists[2],blue)
+    plt.autoscale(tight=True)
+    fig.autofmt_xdate()
+    ax.fmt_xdata = mdates.DateFormatter('%m/%d/%Y %H:%M')
+    loc=mdates.AutoDateLocator()
+    datetimefmt = mdates.AutoDateFormatter(loc)
+    ax.xaxis.set_major_formatter(datetimefmt)
+    ax.xaxis.set_major_locator(loc)
 # plot_number 4
     plot_number = 4   
-    plt.subplot(nrows,ncols,plot_number)
+    ax = plt.subplot(nrows,ncols,plot_number)
     plt.ylabel(ylabel4)
-    plt.minorticks_on()
-    plt.xticks(xtick_locations,trimmed_x_labels,rotation=90)
     plt.grid(which="major")
     yellow='y'
-    plt.plot(ylists[3],yellow)
+    plt.plot(xdatetimes,ylists[3],yellow)
+    plt.autoscale(tight=True)
+    fig.autofmt_xdate()
+    ax.fmt_xdata = mdates.DateFormatter('%m/%d/%Y %H:%M')
+    loc=mdates.AutoDateLocator()
+    datetimefmt = mdates.AutoDateFormatter(loc)
+    ax.xaxis.set_major_formatter(datetimefmt)
+    ax.xaxis.set_major_locator(loc)
     
 # subplots_adjust settings
     vleft  = 0.07  # the left side of the subplots of the figure
     vright = 0.97    # the right side of the subplots of the figure
-    vbottom = 0.15   # the bottom of the subplots of the figure
+    vbottom = 0.10   # the bottom of the subplots of the figure
     vtop = 0.95      # the top of the subplots of the figure
     vwspace = 0.1   # the amount of width reserved for blank space between subplots
     vhspace = 0.08   # the amount of height reserved for white space between subplots

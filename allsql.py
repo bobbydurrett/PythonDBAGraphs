@@ -30,9 +30,9 @@ import util
 
 def allsql():
     q_string = """select 
-to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+sn.END_INTERVAL_TIME,
 sum(ss.executions_delta) TOTAL_EXECUTIONS,
-to_char(sum(ELAPSED_TIME_DELTA)/(sum(executions_delta)*1000)) ELAPSED_AVG_MS
+sum(ELAPSED_TIME_DELTA)/(sum(executions_delta)*1000) ELAPSED_AVG_MS
 from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
 where 
 ss.snap_id=sn.snap_id
@@ -56,7 +56,7 @@ myplot.title = "All SQL statements on "+database+" database"
 myplot.ylabel1 = "Number of executions"
 myplot.ylabel2 = "Averaged Elapsed Milliseconds"
 
-myplot.xlabels = r[0]
+myplot.xdatetimes = r[0]
 myplot.ylists = r[1:]
 
 myplot.line_2subplots()

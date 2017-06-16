@@ -30,7 +30,7 @@ import util
 
 query = """
 select 
-to_char(snap.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+snap.END_INTERVAL_TIME,
 stat.value session_count
 from
 DBA_HIST_SYSSTAT stat,
@@ -41,7 +41,7 @@ stat.DBID = snap.DBID and
 stat.INSTANCE_NUMBER = snap.INSTANCE_NUMBER and
 stat.STAT_NAME = 'logons current'
 order by 
-to_char(snap.END_INTERVAL_TIME,'YYYY-MM-DD HH24:MI:SS')
+snap.END_INTERVAL_TIME
 """
 
 database,dbconnection = util.script_startup('Graph connected session count')
@@ -56,7 +56,7 @@ num_rows = len(date_times)
             
 # plot query
     
-myplot.xlabels = date_times
+myplot.xdatetimes = date_times
 myplot.ylists = [session_counts]
 
 myplot.title = "Number of connected sessions on "+database+" database"

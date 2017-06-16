@@ -57,7 +57,7 @@ myplot.title = "SQL matching group of signatures on "+database+" database elapse
 myplot.ylabel1 = "Number of executions"
 myplot.ylabel2 = "Averaged Elapsed Microseconds"
 
-myplot.xlabels = results[0]
+myplot.xdatetimes = results[0]
 myplot.ylists = results[1:]
 
 myplot.line_2subplots()

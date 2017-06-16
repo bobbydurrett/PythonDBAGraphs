@@ -31,9 +31,9 @@ import util
 def simplesqlstat(sql_id):
     q_string = """
 select 
-to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+sn.END_INTERVAL_TIME,
 ss.executions_delta,
-to_char(ELAPSED_TIME_DELTA/(executions_delta*1000)) ELAPSED_AVG_MS
+ELAPSED_TIME_DELTA/(executions_delta*1000) ELAPSED_AVG_MS
 from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
 where ss.sql_id = '""" 
     q_string += sql_id
@@ -62,7 +62,7 @@ myplot.ylabel2 = "Averaged Elapsed Milliseconds"
 
 util.exit_no_results(r)
 
-myplot.xlabels = r[0]
+myplot.xdatetimes = r[0]
 myplot.ylists = r[1:]
 
 myplot.line_2subplots()

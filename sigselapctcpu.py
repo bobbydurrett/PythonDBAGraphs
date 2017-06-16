@@ -48,7 +48,7 @@ util.exit_no_results(results)
 
 # plot query
 
-myplot.xlabels = results[0]
+myplot.xdatetimes = results[0]
 myplot.ylists = results[1:]
     
 myplot.title = "SQL matching group of signatures on "+database+" database elapsed versus cpu"

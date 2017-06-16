@@ -43,9 +43,9 @@ class groupofsignatures():
         """ puts the query together"""
         q_string = """
 select
-to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+sn.END_INTERVAL_TIME,
 sum(ss.executions_delta) TOTAL_EXECUTIONS,
-to_char(sum(ELAPSED_TIME_DELTA)/((sum(executions_delta)+1))) ELAPSED_AVG_MICRO
+sum(ELAPSED_TIME_DELTA)/((sum(executions_delta)+1)) ELAPSED_AVG_MICRO
 from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
 where ss.snap_id=sn.snap_id
 and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
@@ -76,7 +76,7 @@ order by sn.END_INTERVAL_TIME
         For example:
             
 select
-to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+sn.END_INTERVAL_TIME,
 sum(ELAPSED_TIME_DELTA)/1000000 ELAPSED_SECONDS,
 (sum(CPU_TIME_DELTA)+sum(IOWAIT_DELTA))/1000000 CPU_IO_SECONDS,
 sum(IOWAIT_DELTA)/1000000 IO_SECONDS
@@ -94,17 +94,33 @@ group by sn.END_INTERVAL_TIME
 order by sn.END_INTERVAL_TIME
 
         """
-        q1_string = self.build_query()
-        q2_string = q1_string[0:64]
-        q2_string += """
-to_char(sum(ELAPSED_TIME_DELTA)/1000000) ELAPSED_SECONDS,
-to_char((sum(CPU_TIME_DELTA)+sum(IOWAIT_DELTA))/1000000) CPU_IO_SECONDS,
-to_char(sum(IOWAIT_DELTA)/1000000) IO_SECONDS
+        q_string = """
+select
+sn.END_INTERVAL_TIME,
+sum(ELAPSED_TIME_DELTA)/1000000 ELAPSED_SECONDS,
+(sum(CPU_TIME_DELTA)+sum(IOWAIT_DELTA))/1000000 CPU_IO_SECONDS,
+sum(IOWAIT_DELTA)/1000000 IO_SECONDS
+from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
+where ss.snap_id=sn.snap_id
+and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
+and ss.FORCE_MATCHING_SIGNATURE in
+(
 """
-        q2_string += q1_string[186:]
-        
-        return q2_string
-
+        # Add the signatures to the query with commas
+        # and newlines after all but the last one.
+        snum = 0;
+        slen = len(self.signatures)
+        for s in self.signatures:
+            q_string += str(s)
+            snum += 1;
+            if snum < slen:
+                q_string += ",\n"             
+        q_string += """
+)
+group by sn.END_INTERVAL_TIME
+order by sn.END_INTERVAL_TIME
+"""        
+        return q_string
     def build_query3(self):
         """ 
         Build query for use with single plot with 
@@ -113,15 +129,15 @@ to_char(sum(IOWAIT_DELTA)/1000000) IO_SECONDS
         For example:
             
 select
-to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+sn.END_INTERVAL_TIME,
 pb.percent_busy,
 ela.ELAPSED_MINUTES
 from
 (select 
 idle_before.SNAP_ID,
-to_char((100*(busy_after.value-busy_before.value)/
+(100*(busy_after.value-busy_before.value)/
 (busy_after.value-busy_before.value +
-idle_after.value-idle_before.value))) percent_busy
+idle_after.value-idle_before.value)) percent_busy
 from 
 DBA_HIST_OSSTAT idle_before, 
 DBA_HIST_OSSTAT idle_after, 
@@ -137,7 +153,7 @@ busy_before.STAT_NAME='BUSY_TIME' and
 busy_after.STAT_NAME='BUSY_TIME') pb,
 (select
 SNAP_ID,
-to_char(sum(ELAPSED_TIME_DELTA)/(60*1000000)) ELAPSED_MINUTES
+sum(ELAPSED_TIME_DELTA)/(60*1000000) ELAPSED_MINUTES
 from DBA_HIST_SQLSTAT ss
 where 
 ss.FORCE_MATCHING_SIGNATURE in
@@ -157,15 +173,15 @@ order by pb.snap_id
         """
         q_string = """
 select
-to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+sn.END_INTERVAL_TIME,
 pb.percent_busy,
 ela.ELAPSED_MINUTES
 from
 (select 
 idle_before.SNAP_ID,
-to_char((100*(busy_after.value-busy_before.value)/
+(100*(busy_after.value-busy_before.value)/
 (busy_after.value-busy_before.value +
-idle_after.value-idle_before.value))) percent_busy
+idle_after.value-idle_before.value)) percent_busy
 from 
 DBA_HIST_OSSTAT idle_before, 
 DBA_HIST_OSSTAT idle_after, 
@@ -215,7 +231,7 @@ order by pb.snap_id
         """
         q_string = """
 select
-to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+sn.END_INTERVAL_TIME,
 pb.percent_busy,
 ela.EXECUTIONS_SCALED,
 ela.ELAPSED_AVG,
@@ -223,9 +239,9 @@ rd.READ_AVG
 from
 (select 
 idle_before.SNAP_ID,
-to_char((100*(busy_after.value-busy_before.value)/
+(100*(busy_after.value-busy_before.value)/
 (busy_after.value-busy_before.value +
-idle_after.value-idle_before.value))) percent_busy
+idle_after.value-idle_before.value)) percent_busy
 from 
 DBA_HIST_OSSTAT idle_before, 
 DBA_HIST_OSSTAT idle_after, 
@@ -241,8 +257,8 @@ busy_before.STAT_NAME='BUSY_TIME' and
 busy_after.STAT_NAME='BUSY_TIME') pb,
 (select
 SNAP_ID,
-to_char(sum(ss.executions_delta)/100000) EXECUTIONS_SCALED,
-to_char(sum(ELAPSED_TIME_DELTA)/((sum(executions_delta)+1))) ELAPSED_AVG
+sum(ss.executions_delta)/100000 EXECUTIONS_SCALED,
+sum(ELAPSED_TIME_DELTA)/((sum(executions_delta)+1)) ELAPSED_AVG
 from DBA_HIST_SQLSTAT ss
 where 
 ss.FORCE_MATCHING_SIGNATURE in
@@ -262,7 +278,7 @@ ss.FORCE_MATCHING_SIGNATURE in
 group by SNAP_ID) ela,
 (
 select before.snap_id,
-to_char((after.time_waited_micro-before.time_waited_micro)/(1000*(after.total_waits-before.total_waits))) READ_AVG
+(after.time_waited_micro-before.time_waited_micro)/(1000*(after.total_waits-before.total_waits)) READ_AVG
 from DBA_HIST_SYSTEM_EVENT before, DBA_HIST_SYSTEM_EVENT after
 where before.event_name='db file sequential read' and
 after.event_name=before.event_name and

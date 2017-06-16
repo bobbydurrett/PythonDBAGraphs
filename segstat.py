@@ -31,7 +31,7 @@ import util
 def segstat(owner,object_name,subobject_name,object_type):
     q_string = """
 select 
-to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+sn.END_INTERVAL_TIME,
 ss.LOGICAL_READS_DELTA,
 ss.DB_BLOCK_CHANGES_DELTA
 from DBA_HIST_SEG_STAT ss,DBA_HIST_SNAPSHOT sn,DBA_HIST_SEG_STAT_OBJ so
@@ -87,7 +87,7 @@ myplot.title = ("Segment "+owner+"."+object_name+" on "+database+" database").re
 myplot.ylabel1 = "Logical Reads"
 myplot.ylabel2 = "Block Changes"
 
-myplot.xlabels = r[0]
+myplot.xdatetimes = r[0]
 myplot.ylists = r[1:]
 
 myplot.line_2subplots()

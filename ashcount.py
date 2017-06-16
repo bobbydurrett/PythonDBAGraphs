@@ -37,7 +37,7 @@ def dbaashcount(start_time,end_time):
     q_string = """
 create table dbaashcount as
 select
-substr(to_char(all_time.sample_time,'YY/MM/DD HH24:MI'),4) date_minute,
+to_char(all_time.sample_time,'YYYY/MM/DD HH24:MI') date_minute,
 sum(all_time.cnt)/6 all_count,
 sum(nvl(cpu_time.cnt,0))/6 cpu_count
 from
@@ -74,7 +74,7 @@ session_state = 'ON CPU'
 group by sample_time) cpu_time
 where
 all_time.sample_time=cpu_time.sample_time(+)
-group by to_char(all_time.sample_time,'YY/MM/DD HH24:MI')
+group by to_char(all_time.sample_time,'YYYY/MM/DD HH24:MI')
 """
     return q_string
     
@@ -87,7 +87,7 @@ def vdollarashcount(start_time,end_time):
     q_string = """
 create table combinedashcount as
 select
-substr(to_char(all_time.sample_time,'YY/MM/DD HH24:MI'),4) date_minute,
+to_char(all_time.sample_time,'YYYY/MM/DD HH24:MI') date_minute,
 sum(all_time.cnt)/60 all_count,
 sum(nvl(cpu_time.cnt,0))/60 cpu_count
 from
@@ -124,7 +124,7 @@ session_state = 'ON CPU'
 group by sample_time) cpu_time
 where
 all_time.sample_time=cpu_time.sample_time(+)
-group by to_char(all_time.sample_time,'YY/MM/DD HH24:MI')
+group by to_char(all_time.sample_time,'YYYY/MM/DD HH24:MI')
 """
     return q_string
 
@@ -163,7 +163,11 @@ dbconnection.run_return_no_results(insert_sql)
 dbconnection.commit()
 
 querytext = """
-select * from combinedashcount
+select
+to_date(DATE_MINUTE,'YYYY/MM/DD HH24:MI'),
+ALL_COUNT,
+CPU_COUNT
+from combinedashcount
 order by date_minute"""
     
 results = dbconnection.run_return_flipped_results(querytext)
@@ -172,7 +176,7 @@ util.exit_no_results(results)
 
 # plot query
 
-myplot.xlabels = results[0]
+myplot.xdatetimes = results[0]
 myplot.ylists = results[1:]
     
 myplot.title = "ASH active session count for "+database+" database"

@@ -31,9 +31,9 @@ import util
 def sqlstatwithplans(sql_id):
     q_string = """
 select 
-to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+sn.END_INTERVAL_TIME,
 plan_hash_value,
-to_char(ELAPSED_TIME_DELTA/(executions_delta*1000000)) ELAPSED_AVG_SEC
+ELAPSED_TIME_DELTA/(executions_delta*1000000) ELAPSED_AVG_SEC
 from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
 where ss.sql_id = '""" 
     q_string += sql_id
@@ -108,7 +108,7 @@ for i in range(num_rows):
             
 # plot query
     
-myplot.xlabels = distinct_date_times
+myplot.xdatetimes = distinct_date_times
 myplot.ylists = elapsed_by_plan
 
 myplot.title = "Sql_id "+sql_id+" on "+database+" database with plans"

@@ -30,9 +30,10 @@ import util
         
 def onewait(wait_event,minimum_waits):
     q_string = """
-select to_char(sn.END_INTERVAL_TIME,'MM-DD HH24:MI') DATE_TIME,
+select 
+sn.END_INTERVAL_TIME,
 (after.total_waits-before.total_waits) NUMBER_OF_WAITS,
-to_char((after.time_waited_micro-before.time_waited_micro)/(after.total_waits-before.total_waits)) AVG_MICROSECONDS
+(after.time_waited_micro-before.time_waited_micro)/(after.total_waits-before.total_waits) AVG_MICROSECONDS
 from DBA_HIST_SYSTEM_EVENT before, DBA_HIST_SYSTEM_EVENT after,DBA_HIST_SNAPSHOT sn
 where before.event_name='""" 
     q_string += wait_event
@@ -69,7 +70,7 @@ myplot.title = "'"+wait_event+"' waits on "+database+" database, minimum waits="
 myplot.ylabel1 = "Number of events"
 myplot.ylabel2 = "Averaged Elapsed Microseconds"
 
-myplot.xlabels = r[0]
+myplot.xdatetimes = r[0]
 myplot.ylists = r[1:]
 
 myplot.line_2subplots()

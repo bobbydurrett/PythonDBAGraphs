@@ -196,22 +196,6 @@ def colorsquares(fixed_color,fixed_value):
     plt.autoscale(tight=True)
     plt.show()
     
-def trim_x_ticks():
-    """
-    Cull x labels down to num_ticks ticks
-    so they fit on the screen
-    """
-    num_x_labels = len(xlabels)
-    times_per_tick = int(num_x_labels/numticks)
-    if times_per_tick < 1:
-        times_per_tick = 1
-    trimmed_x_labels=[]
-    for i in range(0,num_x_labels):
-        if i%times_per_tick == 0:
-           trimmed_x_labels.append(xlabels[i])
-    xtick_locations=range(0,num_x_labels,times_per_tick)
-    return (trimmed_x_labels,xtick_locations)
-
 def stacked_bar():
     """
     Stacked bar graph

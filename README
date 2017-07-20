@@ -41,13 +41,15 @@ sigfour.py - Four metrics for SQL statements
           
 ashcount.py - For a time range show the number of active
               sessions on CPU and total number active.
-              
+
 sqlstatwithplans.py - Show execution time of a single 
                       SQL statement by plan.
                       
 sessioncounts.py - Plot the number of connected sessions.
 
 segstat.py - Segment usage statistics for one segment
+
+ashonewait.py - Show the number of sessions active on one particular wait.
           
 Command line help:
 

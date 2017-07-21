@@ -138,6 +138,15 @@ Database name:user name:password
 The output directory is where image files are written if you choose
 "file" as the destination for the graph.
 
+You can test these scripts interactively through IDLE by setting the arguments
+at the top of the script. So, if you want to test ashonewait.py put these lines
+at the top of the file:
+
+import sys
+sys.argv = ['x','screen','YOURDB','N','N']
+
+Once you are done testing remove these lines and run the script from the command line.
+
 Related blog posts:
 
 http://www.bobbydurrettdba.com/?s=Python

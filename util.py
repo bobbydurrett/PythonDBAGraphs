@@ -30,6 +30,7 @@ import sys
 import myplot
 import db
 import argparse
+import locale
 
 """ 
 
@@ -191,6 +192,11 @@ def script_startup(script_description):
     
     user=util.my_oracle_user
     password=util.get_oracle_password(database)
+
+# Set locale so we can test in IDLE
+
+    locale.setlocale(locale.LC_ALL, 'C')
+
     return database,db.connection(user,password,database)
 
 def exit_no_results(results):

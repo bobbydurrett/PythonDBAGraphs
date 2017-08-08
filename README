@@ -50,6 +50,9 @@ sessioncounts.py - Plot the number of connected sessions.
 segstat.py - Segment usage statistics for one segment
 
 ashonewait.py - Show the number of sessions active on one particular wait.
+
+sqlstatcpuio.py - Plots total elapsed, cpu, and io seconds for a single sql_id.
+
           
 Command line help:
 

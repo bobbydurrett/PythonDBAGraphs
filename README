@@ -79,6 +79,26 @@ This creates the onewait.py graph on the ORCL database and sends the output to
 the screen. It does not display the SQL used and it does not output the
 data returned by the query.
 
+Two other included scripts:
+
+colorsquares.py - shows a range of colors. I used this to pick the colors
+for the graphs.
+
+Example:
+
+python colorsquares.py r .5
+
+Sets red at 0.5 and shows range of colors varying blue and green between 0.0 and 1.0.
+
+show_saved.py - Displays a graph based on data saved from an earlier run.
+                Prompts for the name of the file that was previously saved.
+
+Example:
+
+python show_saved.py
+Enter name of data file to be restored: D:\temp\All SQL statements on DBATEST2 database.txt
+
+
 Requirements:
 
 The author primarily uses this application in the following environment:

@@ -82,11 +82,93 @@ ylabel3 = "NOT DEFINED"
 ylabel4 = "NOT DEFINED"
 yticksuffix = None
 numticks = 25
+
+# flag set to true when doing graph from saved data
+
+restoring_data = False
         
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import util
+import myplot
+
+def save_data(plot_name):
+    """
+    Saves the data for a graph so that it can be redrawn later.
+    
+    """
+    
+# Exit if you are displaying an image from saved data
+# No need to save the saved data again.
+    
+    if restoring_data:
+        return
+    
+    save_file=util.open_save_file()
+    
+# These are the global variables in myplot that are used
+# to draw a graph. Saving all of the information that the
+# graph functions would use.
+    
+    util.save_string(save_file,plot_name)
+    
+    util.save_date_times(save_file,xdatetimes)
+    
+    util.save_string_list(save_file,xlabels)
+    
+    util.save_list_list_nums(save_file,ylists)
+    
+    util.save_string_list(save_file,ylistlabels)
+    
+    util.save_string(save_file,title)
+    util.save_string(save_file,filename)
+    util.save_string(save_file,ylabel1)
+    util.save_string(save_file,ylabel2)
+    util.save_string(save_file,ylabel3)
+    util.save_string(save_file,ylabel4)
+    util.save_string(save_file,yticksuffix)
+    
+    util.close_file(save_file)
+
+def restore_data(file_name):
+    """
+    Restores the data for a graph so that it can be redrawn.
+    
+    Returns name of plot like line.
+    
+    """
+    
+# Set flag so that graph routines know that they are graphing restored data    
+    
+    myplot.restoring_data = True
+    
+    restore_file=util.open_restore_file(file_name)
+    
+# Restores the values of the myplot global variables just as they would be
+# if pulled from the database for a graph.
+    
+    plot_name = util.restore_string(restore_file)
+    
+    myplot.xdatetimes = util.restore_date_times(restore_file)
+        
+    myplot.xlabels = util.restore_string_list(restore_file)
+    
+    myplot.ylists = util.restore_list_list_nums(restore_file)
+    
+    myplot.ylistlabels = util.restore_string_list(restore_file)
+    
+    myplot.title = util.restore_string(restore_file)
+    myplot.filename = util.restore_string(restore_file)
+    myplot.ylabel1 = util.restore_string(restore_file)
+    myplot.ylabel2 = util.restore_string(restore_file)
+    myplot.ylabel3 = util.restore_string(restore_file)
+    myplot.ylabel4 = util.restore_string(restore_file)
+    myplot.yticksuffix = util.restore_string(restore_file)
+    
+    util.close_file(restore_file)
+    
+    return plot_name
    
 def my_colors(colornum):
     """
@@ -204,6 +286,10 @@ def stacked_bar():
     if len(xlabels) == 0:
         print("No results to graph")
         return
+
+# Save data to redraw plot later
+        
+    save_data('stacked_bar')
     
 # set the screen title, size, density
     
@@ -283,6 +369,10 @@ def line():
     a variable number of plots.
         
     """
+    
+# Save data to redraw plot later
+        
+    save_data('line')
         
 # set the screen title, size, density
     
@@ -331,6 +421,10 @@ def line_2subplots():
     two subplots.
     
     """
+
+# Save data to redraw plot later
+        
+    save_data('line_2subplots')
         
 # set the screen title, size, density
     
@@ -383,12 +477,15 @@ def line_2subplots():
        
     return
     
-
 def line_4subplots():
     """
     Four subplots
         
     """
+
+# Save data to redraw plot later
+        
+    save_data('line_4subplots')
     
 # set the screen title, size, density
     

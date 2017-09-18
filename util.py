@@ -31,6 +31,7 @@ import myplot
 import db
 import argparse
 import locale
+import datetime
 
 """ 
 
@@ -203,3 +204,126 @@ def exit_no_results(results):
     if results == None:
         print("No results returned")
         sys.exit()
+
+# data saving routines
+
+def open_save_file():
+    """
+    Opens a file in the same directory where we save images.
+    
+    Returns the file object.
+    
+    """
+    file_name = output_dir+myplot.title+'.txt'
+    print("Saving data in "+file_name)
+    save_file = open(file_name, 'w')
+    return save_file
+    
+def save_string(save_file,mystring):
+    """
+    Writes a string to the output file.
+    Converts None to 'None' and adds newline.
+    The rest of the save routines call this routine to write
+    strings on each line.
+    """
+    if mystring == None:
+        mystring = 'None'
+    save_file.write(mystring+'\n')
+    
+def save_date_times(save_file,my_date_times):
+    """
+    Saves a list of datatime objects. Uses repr to get a string
+    representation.
+    Saves number of list items first.
+    """
+    save_string(save_file,str(len(my_date_times)))
+    for dt in my_date_times:
+        save_string(save_file,repr(dt))
+
+def save_list_list_nums(save_file,my_list_list_nums):
+    """
+    Saves a list of lists of floats.
+    Saves the number of lists and then for each list saves
+    the number of list members and the members themselves.
+    """
+    save_string(save_file,str(len(my_list_list_nums)))
+    for l in my_list_list_nums:
+        save_string(save_file,str(len(l)))
+        for n in l:
+           save_string(save_file,str(n)) 
+           
+def save_string_list(save_file,my_string_list):
+    """
+    Saves a list of strings starting with the number
+    of list members.
+    """
+    save_string(save_file,str(len(my_string_list)))
+    for s in my_string_list:
+        save_string(save_file,s)
+
+def close_file(save_file):
+    save_file.close()
+
+# data restoration routines
+
+def open_restore_file(file_name):
+    """
+    Opens a file with saved graph data for reading.
+    """
+    restore_file = open(file_name, 'r')
+    return restore_file
+    
+def restore_string(restore_file):
+    """
+    Reads one string taking off newlines if they exist and
+    converting 'None' to None.
+    """
+    mystring = restore_file.readline()
+    if mystring[len(mystring)-1:]=='\n':
+        mystring = mystring[0:-1]
+    if mystring == 'None':
+        mystring = None
+        
+    return mystring
+    
+def restore_date_times(restore_file):
+    """
+    Returns a list of data time objects.
+    Since it uses the dangerous eval function it 
+    checks that the lines start with datetime.datetime as 
+    they would if they were saved by the save routines.
+    """
+    num_entries = int(restore_string(restore_file))
+    dt_list = []
+    for entry in range(num_entries):
+        dt_string = restore_string(restore_file)
+        if dt_string[0:17] != 'datetime.datetime':
+            print("Possible data corruption")
+            sys.exit()
+        else:
+            dt_list.append(eval(dt_string))
+    return dt_list        
+           
+def restore_list_list_nums(restore_file):
+    """
+    Restores a list of lists of floats
+    """
+    num_lists = int(restore_string(restore_file))
+    list_list=[]
+    for l in range(num_lists):
+        new_list=[]
+        list_size=int(restore_string(restore_file))
+        for n in range(list_size):
+           new_list.append(float(restore_string(restore_file)))
+        list_list.append(new_list)
+    return list_list
+           
+def restore_string_list(restore_file):
+    """
+    Restores a list of strings.
+    """
+    list_size = int(restore_string(restore_file))
+    new_list=[]
+    for n in range(list_size):
+        new_list.append(restore_string(restore_file))
+    return new_list

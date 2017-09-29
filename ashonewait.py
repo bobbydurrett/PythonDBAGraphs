@@ -27,19 +27,64 @@ Graph of one wait event using ASH V$ table
 
 import myplot
 import util
-        
-def ashonewait(wait_event):
+
+def dbaashcount(start_time,end_time,wait_event):
+    """
+    Group by minute.
+    10 second samples.
+    dba table
+    """
     q_string = """
-select 
-sample_time,
-count(*) active_sessions
-from V$ACTIVE_SESSION_HISTORY a
+create table dbaashcount as
+select
+to_char(sample_time,'YYYY/MM/DD HH24:MI') date_minute,
+count(*)/6 wait_count
+from DBA_HIST_ACTIVE_SESS_HISTORY
 where 
+sample_time 
+between 
+to_date('""" 
+    q_string += start_time
+    q_string += """','DD-MON-YYYY HH24:MI:SS')
+and 
+to_date('"""
+    q_string += end_time
+    q_string += """','DD-MON-YYYY HH24:MI:SS')
+and
 event='""" 
     q_string += wait_event
     q_string += """'
-group by sample_time
-order by sample_time
+group by to_char(sample_time,'YYYY/MM/DD HH24:MI')
+"""
+    return q_string
+        
+def vdollarashcount(start_time,end_time,wait_event):
+    """
+    Group by minute.
+    1 second samples.
+    v$ table
+    """
+    q_string = """
+create table combinedashcount as
+select
+to_char(sample_time,'YYYY/MM/DD HH24:MI') date_minute,
+count(*)/60 wait_count
+from V$ACTIVE_SESSION_HISTORY
+where 
+sample_time 
+between 
+to_date('""" 
+    q_string += start_time
+    q_string += """','DD-MON-YYYY HH24:MI:SS')
+and 
+to_date('"""
+    q_string += end_time
+    q_string += """','DD-MON-YYYY HH24:MI:SS')
+and
+event='""" 
+    q_string += wait_event
+    q_string += """'
+group by to_char(sample_time,'YYYY/MM/DD HH24:MI')
 """
     return q_string
 
@@ -49,11 +94,50 @@ database,dbconnection = util.script_startup('ASH one wait event')
 
 wait_event=util.input_with_default('wait event','db file sequential read')
 
-# Build and run query
+start_time=util.input_with_default('Start date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-1900 12:00:00')
 
-q = ashonewait(wait_event);
+end_time=util.input_with_default('End date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-2200 12:00:00')
 
-r = dbconnection.run_return_flipped_results(q)
+# first get ash counts by minutes from dba view
+
+dbconnection.run_return_no_results_catch_error("drop table dbaashcount")
+ 
+dbacrtable = dbaashcount(start_time,end_time,wait_event)
+
+dbconnection.run_return_no_results(dbacrtable);
+
+# now get from ash view put in combined table first
+
+dbconnection.run_return_no_results_catch_error("drop table combinedashcount")
+
+vdcrtable = vdollarashcount(start_time,end_time,wait_event)
+
+dbconnection.run_return_no_results(vdcrtable)
+
+# insert dba rows for date and minute not in v$
+
+insert_sql = """
+insert into combinedashcount
+select * from dbaashcount d
+where d.date_minute not in
+(select date_minute from combinedashcount)"""
+
+dbconnection.run_return_no_results(insert_sql)
+
+dbconnection.commit()
+
+# query final results grouped by minute
+
+querytext = """
+select
+to_date(DATE_MINUTE,'YYYY/MM/DD HH24:MI'),
+wait_count
+from combinedashcount
+order by date_minute"""
+    
+r = dbconnection.run_return_flipped_results(querytext)
+
+util.exit_no_results(r)
 
 # plot query
     

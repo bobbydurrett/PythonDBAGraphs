@@ -81,7 +81,7 @@ group by to_char(all_time.sample_time,'YYYY/MM/DD HH24:MI')
 def vdollarashcount(start_time,end_time):
     """
     Group by minute.
-    10 second samples.
+    1 second samples.
     v$ table
     """
     q_string = """

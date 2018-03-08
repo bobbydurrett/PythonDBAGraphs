@@ -109,7 +109,7 @@ Windows 7
 
 These packages:
 
-cx-Oracle (5.3)
+cx-Oracle (6.2.1)
 cycler (0.10.0)
 matplotlib (2.0.2)
 numpy (1.12.1)

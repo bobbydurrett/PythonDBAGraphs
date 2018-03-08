@@ -275,6 +275,9 @@ def colorsquares(fixed_color,fixed_value):
             elif fixed_color == 'b':
                 c.append((yidx*inc,xidx*inc,fixed_value))
         plt.bar(x,y,inc,color=c,bottom=bt)
+    
+    plt.yticks(np.arange(inc/2.0, 1.0+(1.5*inc), 2.0*inc),
+               np.arange(0.0, 1.0+inc, 2.0*inc))    
     plt.autoscale(tight=True)
     plt.show()
     

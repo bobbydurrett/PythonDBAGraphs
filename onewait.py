@@ -28,7 +28,7 @@ Graph of one wait event
 import myplot
 import util
         
-def onewait(wait_event,minimum_waits):
+def onewait(wait_event,minimum_waits,start_time,end_time):
     q_string = """
 select 
 sn.END_INTERVAL_TIME,
@@ -38,6 +38,16 @@ from DBA_HIST_SYSTEM_EVENT before, DBA_HIST_SYSTEM_EVENT after,DBA_HIST_SNAPSHOT
 where before.event_name='""" 
     q_string += wait_event
     q_string += """' and
+END_INTERVAL_TIME 
+between 
+to_date('""" 
+    q_string += start_time
+    q_string += """','DD-MON-YYYY HH24:MI:SS')
+and 
+to_date('"""
+    q_string += end_time
+    q_string += """','DD-MON-YYYY HH24:MI:SS')
+and 
 after.event_name=before.event_name and
 after.snap_id=before.snap_id+1 and
 after.instance_number=1 and
@@ -56,11 +66,16 @@ database,dbconnection = util.script_startup('One wait event')
 # Get user input
 
 wait_event=util.input_with_default('wait event','db file sequential read')
+
 min_waits=int(util.input_with_default('minimum number of waits per hour','0'))
+
+start_time=util.input_with_default('Start date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-1900 12:00:00')
+
+end_time=util.input_with_default('End date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-2200 12:00:00')
 
 # Build and run query
 
-q = onewait(wait_event,min_waits);
+q = onewait(wait_event,min_waits,start_time,end_time);
 
 r = dbconnection.run_return_flipped_results(q)
 

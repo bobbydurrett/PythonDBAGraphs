@@ -44,8 +44,15 @@ after.file#=before.file# and
 after.snap_id=before.snap_id+1 and
 before.instance_number=after.instance_number and
 after.snap_id=sn.snap_id and
-after.instance_number=sn.instance_number
- and
+after.instance_number=sn.instance_number and
+after.snap_id=sn.snap_id and
+after.instance_number=sn.instance_number and
+after.PHYBLKRD >= before.PHYBLKRD and
+after.PHYBLKWRT >= before.PHYBLKWRT and
+after.READTIM >= before.READTIM and
+after.WRITETIM >= before.WRITETIM and
+after.PHYRDS >= before.PHYRDS and
+after.PHYWRTS >= before.PHYWRTS and
 END_INTERVAL_TIME 
 between 
 to_date('""" 

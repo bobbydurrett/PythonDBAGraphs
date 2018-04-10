@@ -28,7 +28,7 @@ Graph of one wait event
 import myplot
 import util
         
-def onewait(wait_event,minimum_waits,start_time,end_time):
+def onewait(wait_event,minimum_waits,start_time,end_time,instance_number):
     q_string = """
 select 
 sn.END_INTERVAL_TIME,
@@ -50,7 +50,9 @@ to_date('"""
 and 
 after.event_name=before.event_name and
 after.snap_id=before.snap_id+1 and
-after.instance_number=1 and
+after.instance_number = """
+    q_string += instance_number
+    q_string += """ and
 before.instance_number=after.instance_number and
 after.snap_id=sn.snap_id and
 after.instance_number=sn.instance_number and
@@ -73,15 +75,17 @@ start_time=util.input_with_default('Start date and time (DD-MON-YYYY HH24:MI:SS)
 
 end_time=util.input_with_default('End date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-2200 12:00:00')
 
+instance_number=util.input_with_default('Database Instance (1 if not RAC)','1')
+
 # Build and run query
 
-q = onewait(wait_event,min_waits,start_time,end_time);
+q = onewait(wait_event,min_waits,start_time,end_time,instance_number);
 
 r = dbconnection.run_return_flipped_results(q)
 
 # plot query
     
-myplot.title = "'"+wait_event+"' waits on "+database+" database, minimum waits="+str(min_waits)
+myplot.title = "'"+wait_event+"' waits on "+database+" database, instance "+instance_number+", minimum waits="+str(min_waits)
 myplot.ylabel1 = "Number of events"
 myplot.ylabel2 = "Averaged Elapsed Microseconds"
 

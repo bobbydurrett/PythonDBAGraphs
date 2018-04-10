@@ -28,7 +28,7 @@ Execution statistics for all SQL statements
 import myplot
 import util
 
-def allsql(start_time,end_time):
+def allsql(start_time,end_time,instance_number):
     q_string = """select 
 sn.END_INTERVAL_TIME,
 sum(ss.executions_delta) TOTAL_EXECUTIONS,
@@ -37,6 +37,9 @@ from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
 where 
 ss.snap_id=sn.snap_id
 and executions_delta > 0
+and ss.INSTANCE_NUMBER = """
+    q_string += instance_number
+    q_string += """
 and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER and
 END_INTERVAL_TIME 
 between 
@@ -57,15 +60,17 @@ start_time=util.input_with_default('Start date and time (DD-MON-YYYY HH24:MI:SS)
 
 end_time=util.input_with_default('End date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-2200 12:00:00')
 
+instance_number=util.input_with_default('Database Instance (1 if not RAC)','1')
+
 # Build and run query
 
-q = allsql(start_time,end_time);
+q = allsql(start_time,end_time,instance_number);
 
 r = dbconnection.run_return_flipped_results(q)
 
 # plot query
     
-myplot.title = "All SQL statements on "+database+" database"
+myplot.title = "All SQL statements on "+database+" database, instance "+instance_number
 myplot.ylabel1 = "Number of executions"
 myplot.ylabel2 = "Averaged Elapsed Milliseconds"
 

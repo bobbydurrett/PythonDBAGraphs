@@ -28,7 +28,7 @@ Graph of one wait event using ASH V$ table
 import myplot
 import util
 
-def dbaashcount(start_time,end_time,wait_event):
+def dbaashcount(start_time,end_time,wait_event,instance_number):
     """
     Group by minute.
     10 second samples.
@@ -54,11 +54,14 @@ and
 event='""" 
     q_string += wait_event
     q_string += """'
+and INSTANCE_NUMBER = """
+    q_string += instance_number
+    q_string += """
 group by to_char(sample_time,'YYYY/MM/DD HH24:MI')
 """
     return q_string
         
-def vdollarashcount(start_time,end_time,wait_event):
+def vdollarashcount(start_time,end_time,wait_event,instance_number):
     """
     Group by minute.
     1 second samples.
@@ -69,7 +72,7 @@ create table combinedashcount as
 select
 to_char(sample_time,'YYYY/MM/DD HH24:MI') date_minute,
 count(*)/60 wait_count
-from V$ACTIVE_SESSION_HISTORY
+from GV$ACTIVE_SESSION_HISTORY
 where 
 sample_time 
 between 
@@ -84,6 +87,9 @@ and
 event='""" 
     q_string += wait_event
     q_string += """'
+and INST_ID = """
+    q_string += instance_number
+    q_string += """
 group by to_char(sample_time,'YYYY/MM/DD HH24:MI')
 """
     return q_string
@@ -98,11 +104,13 @@ start_time=util.input_with_default('Start date and time (DD-MON-YYYY HH24:MI:SS)
 
 end_time=util.input_with_default('End date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-2200 12:00:00')
 
+instance_number=util.input_with_default('Database Instance (1 if not RAC)','1')
+
 # first get ash counts by minutes from dba view
 
 dbconnection.run_return_no_results_catch_error("drop table dbaashcount")
  
-dbacrtable = dbaashcount(start_time,end_time,wait_event)
+dbacrtable = dbaashcount(start_time,end_time,wait_event,instance_number)
 
 dbconnection.run_return_no_results(dbacrtable);
 
@@ -110,7 +118,7 @@ dbconnection.run_return_no_results(dbacrtable);
 
 dbconnection.run_return_no_results_catch_error("drop table combinedashcount")
 
-vdcrtable = vdollarashcount(start_time,end_time,wait_event)
+vdcrtable = vdollarashcount(start_time,end_time,wait_event,instance_number)
 
 dbconnection.run_return_no_results(vdcrtable)
 
@@ -141,7 +149,7 @@ util.exit_no_results(r)
 
 # plot query
     
-myplot.title = "Sessions waiting on '"+wait_event+"' waits on "+database+" database"
+myplot.title = "Sessions waiting on '"+wait_event+"' waits on "+database+" database, instance "+instance_number
 myplot.ylabel1 = "Number of sessions"
 
 myplot.xdatetimes = r[0]

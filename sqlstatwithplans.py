@@ -28,7 +28,7 @@ Graph execution time by plan.
 import myplot
 import util
 
-def sqlstatwithplans(sql_id):
+def sqlstatwithplans(sql_id,start_time,end_time):
     q_string = """
 select 
 sn.END_INTERVAL_TIME,
@@ -40,7 +40,16 @@ where ss.sql_id = '"""
     q_string += """'
 and ss.snap_id=sn.snap_id
 and executions_delta > 0
-and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
+and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER and
+END_INTERVAL_TIME 
+between 
+to_date('""" 
+    q_string += start_time
+    q_string += """','DD-MON-YYYY HH24:MI:SS')
+and 
+to_date('"""
+    q_string += end_time
+    q_string += """','DD-MON-YYYY HH24:MI:SS')
 order by ss.snap_id,ss.sql_id,plan_hash_value"""
     return q_string
 
@@ -50,7 +59,11 @@ database,dbconnection = util.script_startup('Graph execution time by plan')
 
 sql_id=util.input_with_default('SQL_ID','dkqs29nsj23jq')
 
-mainquery = sqlstatwithplans(sql_id)
+start_time=util.input_with_default('Start date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-1900 12:00:00')
+
+end_time=util.input_with_default('End date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-2200 12:00:00')
+
+mainquery = sqlstatwithplans(sql_id,start_time,end_time)
 
 mainresults = dbconnection.run_return_flipped_results(mainquery)
 

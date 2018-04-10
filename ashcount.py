@@ -28,7 +28,7 @@ Shows ASH active session counts in time period.
 import myplot
 import util
 
-def dbaashcount(start_time,end_time):
+def dbaashcount(start_time,end_time,instance_number):
     """
     Group by minute.
     10 second samples.
@@ -55,6 +55,9 @@ and
 to_date('"""
     q_string += end_time
     q_string += """','DD-MON-YYYY HH24:MI:SS')
+and a.INSTANCE_NUMBER = """
+    q_string += instance_number
+    q_string += """
 group by sample_time) all_time,
 (select 
 sample_time,
@@ -71,6 +74,9 @@ to_date('"""
     q_string += end_time
     q_string += """','DD-MON-YYYY HH24:MI:SS') and
 session_state = 'ON CPU'
+and a.INSTANCE_NUMBER = """
+    q_string += instance_number
+    q_string += """
 group by sample_time) cpu_time
 where
 all_time.sample_time=cpu_time.sample_time(+)
@@ -78,7 +84,7 @@ group by to_char(all_time.sample_time,'YYYY/MM/DD HH24:MI')
 """
     return q_string
     
-def vdollarashcount(start_time,end_time):
+def vdollarashcount(start_time,end_time,instance_number):
     """
     Group by minute.
     1 second samples.
@@ -94,7 +100,7 @@ from
 (select 
 sample_time,
 count(*) cnt
-from V$ACTIVE_SESSION_HISTORY a
+from GV$ACTIVE_SESSION_HISTORY a
 where 
 sample_time 
 between 
@@ -105,11 +111,14 @@ and
 to_date('"""
     q_string += end_time
     q_string += """','DD-MON-YYYY HH24:MI:SS')
+and a.INST_ID = """
+    q_string += instance_number
+    q_string += """
 group by sample_time) all_time,
 (select 
 sample_time,
 count(*) cnt
-from V$ACTIVE_SESSION_HISTORY a
+from GV$ACTIVE_SESSION_HISTORY a
 where 
 sample_time 
 between 
@@ -121,6 +130,9 @@ to_date('"""
     q_string += end_time
     q_string += """','DD-MON-YYYY HH24:MI:SS') and
 session_state = 'ON CPU'
+and a.INST_ID = """
+    q_string += instance_number
+    q_string += """
 group by sample_time) cpu_time
 where
 all_time.sample_time=cpu_time.sample_time(+)
@@ -134,11 +146,13 @@ start_time=util.input_with_default('Start date and time (DD-MON-YYYY HH24:MI:SS)
 
 end_time=util.input_with_default('End date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-2200 12:00:00')
 
+instance_number=util.input_with_default('Database Instance (1 if not RAC)','1')
+
 # first get ash counts by minutes from dba view
 
 dbconnection.run_return_no_results_catch_error("drop table dbaashcount")
  
-dbacrtable = dbaashcount(start_time,end_time)
+dbacrtable = dbaashcount(start_time,end_time,instance_number)
 
 dbconnection.run_return_no_results(dbacrtable);
 
@@ -146,7 +160,7 @@ dbconnection.run_return_no_results(dbacrtable);
 
 dbconnection.run_return_no_results_catch_error("drop table combinedashcount")
 
-vdcrtable = vdollarashcount(start_time,end_time)
+vdcrtable = vdollarashcount(start_time,end_time,instance_number)
 
 dbconnection.run_return_no_results(vdcrtable)
 
@@ -179,7 +193,7 @@ util.exit_no_results(results)
 myplot.xdatetimes = results[0]
 myplot.ylists = results[1:]
     
-myplot.title = "ASH active session count for "+database+" database"
+myplot.title = "ASH active session count for "+database+" database, instance "+instance_number
 myplot.ylabel1 = "Sessions"
     
 myplot.ylistlabels=["Total","CPU"]

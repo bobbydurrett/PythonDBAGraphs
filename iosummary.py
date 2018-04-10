@@ -28,7 +28,7 @@ Graph i/o metrics for overall database.
 import myplot
 import util
 
-def iosummary(start_time,end_time):
+def iosummary(start_time,end_time,instance_number):
     q_string = """
 select 
 sn.END_INTERVAL_TIME,
@@ -42,6 +42,9 @@ from DBA_HIST_FILESTATXS before, DBA_HIST_FILESTATXS after,DBA_HIST_SNAPSHOT sn
 where 
 after.file#=before.file# and
 after.snap_id=before.snap_id+1 and
+before.instance_number = """
+    q_string += instance_number
+    q_string += """ and
 before.instance_number=after.instance_number and
 after.snap_id=sn.snap_id and
 after.instance_number=sn.instance_number and
@@ -73,7 +76,9 @@ start_time=util.input_with_default('Start date and time (DD-MON-YYYY HH24:MI:SS)
 
 end_time=util.input_with_default('End date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-2200 12:00:00')
 
-query = iosummary(start_time,end_time)
+instance_number=util.input_with_default('Database Instance (1 if not RAC)','1')
+
+query = iosummary(start_time,end_time,instance_number)
 
 results = dbconnection.run_return_flipped_results(query)
 
@@ -91,7 +96,7 @@ num_rows = len(date_times)
 myplot.xdatetimes = date_times
 myplot.ylists = [terabytes_read,terabytes_written,ave_read_time_milliseconds,ave_write_time_milliseconds]
 
-myplot.title = "IO summary for "+database+" database"
+myplot.title = "IO summary for "+database+" database, instance "+instance_number
 myplot.ylabel1 = "Terabytes read"
 myplot.ylabel2 = "Terabytes written"
 myplot.ylabel3 = "Average read time in milliseconds"

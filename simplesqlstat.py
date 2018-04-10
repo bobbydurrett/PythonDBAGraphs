@@ -28,7 +28,7 @@ Execution statistics for one SQL statement
 import myplot
 import util
 
-def simplesqlstat(sql_id):
+def simplesqlstat(sql_id,start_time,end_time):
     q_string = """
 select 
 sn.END_INTERVAL_TIME,
@@ -39,18 +39,31 @@ where ss.sql_id = '"""
     q_string += sql_id
     q_string += """'
 and ss.snap_id=sn.snap_id
-and executions_delta > 0
-and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
+and executions_delta > 0 
+and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER and
+END_INTERVAL_TIME 
+between 
+to_date('""" 
+    q_string += start_time
+    q_string += """','DD-MON-YYYY HH24:MI:SS')
+and 
+to_date('"""
+    q_string += end_time
+    q_string += """','DD-MON-YYYY HH24:MI:SS')
 order by ss.snap_id,ss.sql_id"""
     return q_string
 
 database,dbconnection = util.script_startup('Run statistics for one SQL id')
 
+start_time=util.input_with_default('Start date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-1900 12:00:00')
+
+end_time=util.input_with_default('End date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-2200 12:00:00')
+
 # Get user input
 
 sql_id=util.input_with_default('SQL_ID','acrg0q0qtx3gr')
 
-q = simplesqlstat(sql_id);
+q = simplesqlstat(sql_id,start_time,end_time);
 
 r = dbconnection.run_return_flipped_results(q)
 

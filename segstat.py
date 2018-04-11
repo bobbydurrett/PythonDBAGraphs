@@ -28,7 +28,7 @@ Segment usage statistics for one segment
 import myplot
 import util
 
-def segstat(owner,object_name,subobject_name,object_type):
+def segstat(owner,object_name,subobject_name,object_type,start_time,end_time,instance_number):
     q_string = """
 select 
 sn.END_INTERVAL_TIME,
@@ -56,11 +56,29 @@ so.TS# = ss.TS# and
 so.OBJ# = ss.OBJ# and
 so.DATAOBJ# = ss.DATAOBJ# and
 ss.snap_id=sn.snap_id and
-ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
+ss.INSTANCE_NUMBER = """
+    q_string += instance_number
+    q_string += """ and
+ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER and
+sn.END_INTERVAL_TIME 
+between 
+to_date('""" 
+    q_string += start_time
+    q_string += """','DD-MON-YYYY HH24:MI:SS')
+and 
+to_date('"""
+    q_string += end_time
+    q_string += """','DD-MON-YYYY HH24:MI:SS')
 order by ss.snap_id"""
     return q_string
 
 database,dbconnection = util.script_startup('Usage statistics for one segment')
+
+start_time=util.input_with_default('Start date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-1900 12:00:00')
+
+end_time=util.input_with_default('End date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-2200 12:00:00')
+
+instance_number=util.input_with_default('Database Instance (1 if not RAC)','1')
 
 # Get user input
 
@@ -73,7 +91,7 @@ if subobject_name == '':
     
 object_type=util.input_with_default('OBJECT_TYPE','TABLE')
 
-q = segstat(owner,object_name,subobject_name,object_type);
+q = segstat(owner,object_name,subobject_name,object_type,start_time,end_time,instance_number);
 
 r = dbconnection.run_return_flipped_results(q)
 
@@ -83,7 +101,7 @@ util.exit_no_results(r)
     
 # Matplotlib can't seem to handle $$ in the title so replace with xx
 
-myplot.title = ("Segment "+owner+"."+object_name+" on "+database+" database").replace("$$","xx")
+myplot.title = ("Segment "+owner+"."+object_name+" on "+database+" database, instance "+instance_number).replace("$$","xx")
 myplot.ylabel1 = "Logical Reads"
 myplot.ylabel2 = "Block Changes"
 

@@ -28,7 +28,7 @@ Graph execution time by plan.
 import myplot
 import util
 
-def sqlstatwithplans(sql_id,start_time,end_time):
+def sqlstatwithplans(sql_id,start_time,end_time,instance_number):
     q_string = """
 select 
 sn.END_INTERVAL_TIME,
@@ -40,6 +40,9 @@ where ss.sql_id = '"""
     q_string += """'
 and ss.snap_id=sn.snap_id
 and executions_delta > 0
+and ss.INSTANCE_NUMBER = """
+    q_string += instance_number
+    q_string += """
 and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER and
 END_INTERVAL_TIME 
 between 
@@ -63,7 +66,9 @@ start_time=util.input_with_default('Start date and time (DD-MON-YYYY HH24:MI:SS)
 
 end_time=util.input_with_default('End date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-2200 12:00:00')
 
-mainquery = sqlstatwithplans(sql_id,start_time,end_time)
+instance_number=util.input_with_default('Database Instance (1 if not RAC)','1')
+
+mainquery = sqlstatwithplans(sql_id,start_time,end_time,instance_number)
 
 mainresults = dbconnection.run_return_flipped_results(mainquery)
 
@@ -124,7 +129,7 @@ for i in range(num_rows):
 myplot.xdatetimes = distinct_date_times
 myplot.ylists = elapsed_by_plan
 
-myplot.title = "Sql_id "+sql_id+" on "+database+" database with plans"
+myplot.title = "Sql_id "+sql_id+" on "+database+" database, instance "+instance_number+" with plans"
 myplot.ylabel1 = "Averaged Elapsed Seconds"
     
 myplot.ylistlabels=distinct_plans

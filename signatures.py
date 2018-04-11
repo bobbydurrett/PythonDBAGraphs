@@ -272,6 +272,12 @@ DBA_HIST_OSSTAT idle_after,
 DBA_HIST_OSSTAT busy_before,
 DBA_HIST_OSSTAT busy_after
 where
+idle_before.INSTANCE_NUMBER = """
+        q_string += self.instance_number
+        q_string += """ and
+idle_before.instance_number = idle_after.instance_number and
+idle_before.instance_number = busy_before.instance_number and
+idle_before.instance_number = busy_after.instance_number and
 idle_before.SNAP_ID=busy_before.SNAP_ID and
 idle_after.SNAP_ID=busy_after.SNAP_ID and
 idle_before.SNAP_ID+1=idle_after.SNAP_ID and
@@ -307,12 +313,23 @@ from DBA_HIST_SYSTEM_EVENT before, DBA_HIST_SYSTEM_EVENT after
 where before.event_name='db file sequential read' and
 after.event_name=before.event_name and
 after.snap_id=before.snap_id+1 and
-after.instance_number=1 and
+after.INSTANCE_NUMBER = """
+        q_string += self.instance_number
+        q_string += """ and
 before.instance_number=after.instance_number and
 (after.total_waits-before.total_waits) > 0
 ) rd,
 DBA_HIST_SNAPSHOT sn
 where 
+sn.END_INTERVAL_TIME 
+between 
+to_date('""" 
+        q_string += self.start_time
+        q_string += """','DD-MON-YYYY HH24:MI:SS')
+and 
+to_date('"""
+        q_string += self.end_time
+        q_string += """','DD-MON-YYYY HH24:MI:SS') and
 pb.snap_id=ela.snap_id and
 pb.snap_id=rd.snap_id and
 pb.snap_id=sn.snap_id

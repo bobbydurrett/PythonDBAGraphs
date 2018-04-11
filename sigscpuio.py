@@ -32,7 +32,15 @@ import signatures
 
 database,dbconnection = util.script_startup('SQL statments by signature CPU and IO')
 
+start_time=util.input_with_default('Start date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-1900 12:00:00')
+
+end_time=util.input_with_default('End date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-2200 12:00:00')
+
+instance_number=util.input_with_default('Database Instance (1 if not RAC)','1')
+
 queryobj = signatures.groupofsignatures()
+
+queryobj.set_start_end_instance(start_time,end_time,instance_number)
 
 lines = util.read_config_file(util.config_dir,database+util.groupsigs_file)
 
@@ -51,7 +59,7 @@ util.exit_no_results(results)
 myplot.xdatetimes = results[0]
 myplot.ylists = results[1:]
     
-myplot.title = "SQL matching group of signatures on "+database+" database elapsed CPU IO"
+myplot.title = "SQL matching group of signatures on "+database+" database, instance "+instance_number+" elapsed CPU IO"
 myplot.ylabel1 = "Seconds"
     
 myplot.ylistlabels=["Elapsed","CPU+IO","IO"]

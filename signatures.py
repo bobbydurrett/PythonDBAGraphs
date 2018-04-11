@@ -126,6 +126,9 @@ sum(ELAPSED_TIME_DELTA)/1000000 ELAPSED_SECONDS,
 sum(IOWAIT_DELTA)/1000000 IO_SECONDS
 from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
 where ss.snap_id=sn.snap_id
+and ss.INSTANCE_NUMBER = """
+        q_string += self.instance_number
+        q_string += """
 and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
 and ss.FORCE_MATCHING_SIGNATURE in
 (
@@ -140,7 +143,16 @@ and ss.FORCE_MATCHING_SIGNATURE in
             if snum < slen:
                 q_string += ",\n"             
         q_string += """
-)
+) and
+sn.END_INTERVAL_TIME 
+between 
+to_date('""" 
+        q_string += self.start_time
+        q_string += """','DD-MON-YYYY HH24:MI:SS')
+and 
+to_date('"""
+        q_string += self.end_time
+        q_string += """','DD-MON-YYYY HH24:MI:SS')
 group by sn.END_INTERVAL_TIME
 order by sn.END_INTERVAL_TIME
 """        

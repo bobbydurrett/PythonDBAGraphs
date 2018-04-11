@@ -28,8 +28,8 @@ Graph connected session count
 import myplot
 import util
 
-query = """
-select 
+def sessioncounts(start_time,end_time,instance_number):
+    q_string = """select 
 snap.END_INTERVAL_TIME,
 stat.value session_count
 from
@@ -38,13 +38,33 @@ DBA_HIST_SNAPSHOT snap
 where
 stat.SNAP_ID = snap.SNAP_ID and
 stat.DBID = snap.DBID and
+stat.INSTANCE_NUMBER = """
+    q_string += instance_number
+    q_string += """ and
 stat.INSTANCE_NUMBER = snap.INSTANCE_NUMBER and
-stat.STAT_NAME = 'logons current'
+stat.STAT_NAME = 'logons current' and
+snap.END_INTERVAL_TIME 
+between 
+to_date('""" 
+    q_string += start_time
+    q_string += """','DD-MON-YYYY HH24:MI:SS')
+and 
+to_date('"""
+    q_string += end_time
+    q_string += """','DD-MON-YYYY HH24:MI:SS')
 order by 
-snap.END_INTERVAL_TIME
-"""
+snap.END_INTERVAL_TIME"""
+    return q_string
 
 database,dbconnection = util.script_startup('Graph connected session count')
+
+start_time=util.input_with_default('Start date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-1900 12:00:00')
+
+end_time=util.input_with_default('End date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-2200 12:00:00')
+
+instance_number=util.input_with_default('Database Instance (1 if not RAC)','1')
+
+query = sessioncounts(start_time,end_time,instance_number)
 
 results = dbconnection.run_return_flipped_results(query)
 
@@ -59,7 +79,7 @@ num_rows = len(date_times)
 myplot.xdatetimes = date_times
 myplot.ylists = [session_counts]
 
-myplot.title = "Number of connected sessions on "+database+" database"
+myplot.title = "Number of connected sessions on "+database+" database, instance "+instance_number
 myplot.ylabel1 = "Number of sessions"
     
 myplot.ylistlabels=["logons current"]

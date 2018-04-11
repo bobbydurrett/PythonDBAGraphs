@@ -224,6 +224,12 @@ DBA_HIST_OSSTAT idle_after,
 DBA_HIST_OSSTAT busy_before,
 DBA_HIST_OSSTAT busy_after
 where
+idle_before.INSTANCE_NUMBER = """
+        q_string += self.instance_number
+        q_string += """ and
+idle_before.instance_number = idle_after.instance_number and
+idle_before.instance_number = busy_before.instance_number and
+idle_before.instance_number = busy_after.instance_number and
 idle_before.SNAP_ID=busy_before.SNAP_ID and
 idle_after.SNAP_ID=busy_after.SNAP_ID and
 idle_before.SNAP_ID+1=idle_after.SNAP_ID and
@@ -253,6 +259,15 @@ ss.FORCE_MATCHING_SIGNATURE in
 group by SNAP_ID) ela,
 DBA_HIST_SNAPSHOT sn
 where 
+sn.END_INTERVAL_TIME 
+between 
+to_date('""" 
+        q_string += self.start_time
+        q_string += """','DD-MON-YYYY HH24:MI:SS')
+and 
+to_date('"""
+        q_string += self.end_time
+        q_string += """','DD-MON-YYYY HH24:MI:SS') and
 pb.snap_id=ela.snap_id and
 pb.snap_id=sn.snap_id
 order by pb.snap_id

@@ -28,7 +28,7 @@ Plots total elapsed, cpu, and io seconds for a single sql_id.
 import myplot
 import util
 
-def sqlstatcpuio(sql_id,start_time,end_time):
+def sqlstatcpuio(sql_id,start_time,end_time,instance_number):
     q_string = """
 select
 sn.END_INTERVAL_TIME,
@@ -37,6 +37,9 @@ sum(ELAPSED_TIME_DELTA)/1000000 ELAPSED_SECONDS,
 sum(IOWAIT_DELTA)/1000000 IO_SECONDS
 from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
 where ss.snap_id=sn.snap_id
+and ss.INSTANCE_NUMBER = """
+    q_string += instance_number
+    q_string += """
 and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
 and ss.SQL_ID='""" 
     q_string += sql_id
@@ -63,7 +66,9 @@ start_time=util.input_with_default('Start date and time (DD-MON-YYYY HH24:MI:SS)
 
 end_time=util.input_with_default('End date and time (DD-MON-YYYY HH24:MI:SS)','01-JAN-2200 12:00:00')
 
-querytext = sqlstatcpuio(sql_id,start_time,end_time)
+instance_number=util.input_with_default('Database Instance (1 if not RAC)','1')
+
+querytext = sqlstatcpuio(sql_id,start_time,end_time,instance_number)
 
 results = dbconnection.run_return_flipped_results(querytext)
 
@@ -74,7 +79,7 @@ util.exit_no_results(results)
 myplot.xdatetimes = results[0]
 myplot.ylists = results[1:]
     
-myplot.title = "Sql_id "+sql_id+" on "+database+" database"
+myplot.title = "Sql_id "+sql_id+" on "+database+" database, instance "+instance_number
 myplot.ylabel1 = "Seconds"
     
 myplot.ylistlabels=["Elapsed","CPU+IO","IO"]

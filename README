@@ -54,6 +54,8 @@ ashonewait.py - Show the number of sessions active on one particular wait.
 sqlstatcpuio.py - Plots total elapsed, cpu, and io seconds for a single sql_id.
 
 iosummary.py - Shows overall I/O information for one database.
+
+hostcpu.py - Shows host level CPU information for one instance
           
 Command line help:
 

@@ -382,6 +382,7 @@ def line():
     fig = plt.figure(title,graph_dimensions,graph_dpi)
                
 # do the plot
+
     plt.title(title)
     plt.ylabel(ylabel1)
     plt.grid(which="major")
@@ -391,7 +392,7 @@ def line():
 
 # date time formatting
 
-    ax = plt.axes()
+    ax = fig.axes[0]
     fig.autofmt_xdate()
     ax.fmt_xdata = mdates.DateFormatter('%m/%d/%Y %H:%M')
     loc=mdates.AutoDateLocator()

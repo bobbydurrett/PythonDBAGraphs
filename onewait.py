@@ -83,6 +83,8 @@ q = onewait(wait_event,min_waits,start_time,end_time,instance_number);
 
 r = dbconnection.run_return_flipped_results(q)
 
+util.exit_no_results(r)
+
 # plot query
     
 myplot.title = "'"+wait_event+"' waits on "+database+" database, instance "+instance_number+", minimum waits="+str(min_waits)

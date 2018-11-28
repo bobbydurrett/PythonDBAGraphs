@@ -215,6 +215,8 @@ def open_save_file():
     
     """
     file_name = output_dir+myplot.title+'.txt'
+    # get rid of asterisks
+    file_name = file_name.replace('*','')
     print("Saving data in "+file_name)
     save_file = open(file_name, 'w')
     return save_file

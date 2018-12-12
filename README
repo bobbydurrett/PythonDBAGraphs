@@ -58,6 +58,8 @@ iosummary.py - Shows overall I/O information for one database.
 hostcpu.py - Shows host level CPU information for one instance
 
 onesysstat.py - Shows a single system statistic for one instance
+
+space.py - Shows overall tablespace usage over time
           
 Command line help:
 

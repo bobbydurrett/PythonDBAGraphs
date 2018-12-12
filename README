@@ -56,6 +56,8 @@ sqlstatcpuio.py - Plots total elapsed, cpu, and io seconds for a single sql_id.
 iosummary.py - Shows overall I/O information for one database.
 
 hostcpu.py - Shows host level CPU information for one instance
+
+onesysstat.py - Shows a single system statistic for one instance
           
 Command line help:
 

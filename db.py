@@ -50,7 +50,6 @@ class connection:
         except cx_Oracle.DatabaseError as e:
             print("Error logging in: "+str(e.args[0]))
             print("Username: "+username)
-            print("Password: "+password)
             print("Database: "+database)
             sys.exit(-1)
         self.cur = self.con.cursor()

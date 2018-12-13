@@ -31,15 +31,25 @@ import util
 def simplesqlstat(sql_id,start_time,end_time,instance_number):
     q_string = """
 select 
+END_INTERVAL_TIME,
+executions_delta,
+ELAPSED_TIME_DELTA/(nonzeroexecutions*1000) ELAPSED_AVG_MS
+from 
+(
+select 
+ss.snap_id,
+ss.sql_id,
+ss.plan_hash_value,
 sn.END_INTERVAL_TIME,
 ss.executions_delta,
-ELAPSED_TIME_DELTA/(executions_delta*1000) ELAPSED_AVG_MS
-from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
+case ss.executions_delta when 0 then 1 else ss.executions_delta end nonzeroexecutions,
+ELAPSED_TIME_DELTA
+from
+DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
 where ss.sql_id = '""" 
     q_string += sql_id
     q_string += """'
 and ss.snap_id=sn.snap_id
-and executions_delta > 0 
 and ss.INSTANCE_NUMBER = """
     q_string += instance_number
     q_string += """
@@ -53,7 +63,8 @@ and
 to_date('"""
     q_string += end_time
     q_string += """','DD-MON-YYYY HH24:MI:SS')
-order by ss.snap_id,ss.sql_id"""
+)
+order by snap_id,sql_id"""
     return q_string
 
 database,dbconnection = util.script_startup('Run statistics for one SQL id')

@@ -31,15 +31,23 @@ import util
 def sqlstatwithplans(sql_id,start_time,end_time,instance_number):
     q_string = """
 select 
-sn.END_INTERVAL_TIME,
+END_INTERVAL_TIME,
 plan_hash_value,
-ELAPSED_TIME_DELTA/(executions_delta*1000000) ELAPSED_AVG_SEC
+ELAPSED_TIME_DELTA/(nonzeroexecutions*1000000) ELAPSED_AVG_SEC
+from
+(select 
+ss.snap_id,
+ss.sql_id,
+ss.plan_hash_value,
+sn.END_INTERVAL_TIME,
+ss.executions_delta,
+case ss.executions_delta when 0 then 1 else ss.executions_delta end nonzeroexecutions,
+ELAPSED_TIME_DELTA
 from DBA_HIST_SQLSTAT ss,DBA_HIST_SNAPSHOT sn
 where ss.sql_id = '""" 
     q_string += sql_id
     q_string += """'
 and ss.snap_id=sn.snap_id
-and executions_delta > 0
 and ss.INSTANCE_NUMBER = """
     q_string += instance_number
     q_string += """
@@ -53,7 +61,8 @@ and
 to_date('"""
     q_string += end_time
     q_string += """','DD-MON-YYYY HH24:MI:SS')
-order by ss.snap_id,ss.sql_id,plan_hash_value"""
+)
+order by snap_id,sql_id,plan_hash_value"""
     return q_string
 
 database,dbconnection = util.script_startup('Graph execution time by plan')

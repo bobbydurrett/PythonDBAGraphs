@@ -32,6 +32,7 @@ import db
 import argparse
 import locale
 import datetime
+from cryptography.fernet import Fernet
 
 """ 
 
@@ -48,7 +49,8 @@ output_dir = None
 
 # files
 
-password_file = None
+password_file = 'password'
+key_file = 'key'
 
 # fixed file names
 
@@ -103,13 +105,12 @@ def get_directories():
     util.password_dir= lines[3]
     util.output_dir= lines[4]
 
-def get_user_and_files():
+def get_user():
     """ 
-    Get Oracle user name and file names.
+    Get Oracle user name.
     """
     lines = read_config_file(util.config_dir,util.userandfiles_file)
-    util.my_oracle_user = lines[3]
-    util.password_file = lines[4]
+    util.my_oracle_user = lines[2]
     
 def load_configuration():
     """ 
@@ -117,33 +118,108 @@ def load_configuration():
     gets the name of the Oracle user. 
     """
     get_directories()
-    get_user_and_files()
+    get_user()
+    
+def save_key():
+    """
+    Generates and saves a key for password encryption and 
+    decryption.
+    
+    Uses cryptography.fernet.
+    
+    """
 
-def get_oracle_password(database):
+    # Generate key
+    key = Fernet.generate_key()
+    
+    # Save key to file
+    try:
+        f = open(config_dir+key_file, 'wb')
+    except IOError as e:
+        if e.strerror == 'No such file or directory':
+            print("Could not open key file for write")
+            sys.exit()
+        else:
+            raise e
+   
+    f.write(key)
+    f.close()
+    
+def get_key():
+    """
+    Return key for password encryption and decryption.
+    
+    Uses cryptography.fernet.
+    
+    """
+    # read key
+    try:
+        f = open(config_dir+key_file, 'rb')
+    except IOError as e:
+        if e.strerror == 'No such file or directory':
+            print("Could not find key file")
+            sys.exit()
+        else:
+            raise e
+   
+    key = f.read()
+    f.close()
+    
+    return key   
+
+def get_oracle_password():
     """
     Return my oracle password
     
-    This assumes that the password file has entries of the format
-    
-    database:username:password
-    
-    Also, if database is ALLDBS, then it assumes that all databases
-    have the same password for the given user.
+    Uses cryptography.fernet to unencrypt password.
     
     """
-    lines = read_config_file(util.password_dir,util.password_file)
-    # look for specific database first
-    for oneline in lines:
-        if len(oneline) > 0 and oneline[0] != '#':
-            fields = oneline.split(':')
-            if fields[0].upper() == database.upper() and fields[1].upper() == util.my_oracle_user.upper():
-                return fields[2]
-    # look for ALLDBS indicating same password all databases
-    for oneline in lines:
-        if len(oneline) > 0 and oneline[0] != '#':
-            fields = oneline.split(':')
-            if fields[0].upper() == 'ALLDBS' and fields[1].upper() == util.my_oracle_user.upper():
-                return fields[2]
+   
+    key = get_key()
+    
+    # read password
+    try:
+        f2 = open(password_dir+password_file, 'rb')
+    except IOError as e:
+        if e.strerror == 'No such file or directory':
+            print("Could not find password file")
+            sys.exit()
+        else:
+            raise e
+    token=f2.read()
+    f2.close()
+
+    # decript password
+    f = Fernet(key)
+    password = f.decrypt(token).decode('utf-8')
+
+    return password
+    
+def save_oracle_password(password):
+    """
+    Saves oracle password.
+    
+    Uses cryptography.fernet to unencrypt password.
+    
+    """
+
+    key = get_key()
+    
+    # encrypt password
+    f = Fernet(key)
+    token = f.encrypt(password.encode('utf-8'))
+    
+    # write password
+    try:
+        f2 = open(password_dir+password_file, 'wb')
+    except IOError as e:
+        if e.strerror == 'No such file or directory':
+            print("Could open password file for write")
+            sys.exit()
+        else:
+            raise e
+    f2.write(token)
+    f2.close()
     
 def input_with_default(prompt,default_value):
     if sys.version_info.major < 3:
@@ -192,7 +268,7 @@ def script_startup(script_description):
     db.showdata = args.showdata
     
     user=util.my_oracle_user
-    password=util.get_oracle_password(database)
+    password=util.get_oracle_password()
 
 # Set locale so we can test in IDLE
 

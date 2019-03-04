@@ -86,7 +86,7 @@ This creates the onewait.py graph on the ORCL database and sends the output to
 the screen. It does not display the SQL used and it does not output the
 data returned by the query.
 
-Two other included scripts:
+Three other included scripts:
 
 colorsquares.py - shows a range of colors. I used this to pick the colors
 for the graphs.
@@ -105,6 +105,12 @@ Example:
 python show_saved.py
 Enter name of data file to be restored: D:\temp\All SQL statements on DBATEST2 database.txt
 
+setpassword.py - Saves an encrypted version of your Oracle password.
+
+Example:
+
+python setpassword.py
+Enter password for MYUSER: MYPASSWORD
 
 Requirements:
 

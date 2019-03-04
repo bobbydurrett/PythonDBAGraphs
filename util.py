@@ -55,7 +55,7 @@ key_file = 'key'
 # fixed file names
 
 directories_file = 'directories.txt'
-userandfiles_file = 'userandfilenames.txt'
+username_file = 'username.txt'
 ashcpu_file = 'ashcpufile.txt'
 groupsigs_file = 'groupofsignatures.txt'
 
@@ -109,7 +109,7 @@ def get_user():
     """ 
     Get Oracle user name.
     """
-    lines = read_config_file(util.config_dir,util.userandfiles_file)
+    lines = read_config_file(util.config_dir,util.username_file)
     util.my_oracle_user = lines[2]
     
 def load_configuration():

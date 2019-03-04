@@ -164,13 +164,21 @@ are stored in the file directories.txt which is kept in the same
 location as the util.py script. The directories are the configuration, 
 password, and output directories.
 
-The configuration directory contains the file userandfilenames.txt
-which has the Oracle user name and the name of the password file.
+The configuration directory contains the file username.txt
+which has the Oracle user name.
 
-The password directory contains the password file. It has lines in this 
-format:
+It also contains database and graph specific configuration files:
 
-Database name:user name:password
+DBNAMEashcpufile.txt - ashcpu.py configuration for database DBNAME
+
+DBNAMEgroupofsignatures.txt - SQL signatures for database DBNAME for
+graphs with "sig" in their name such as sigscpuio.py.
+
+The configuration directory also contains a file with the password
+encryption key.
+
+The password directory contains the password file which stores the
+encrypted password.
 
 The output directory is where image files are written if you choose
 "file" as the destination for the graph.

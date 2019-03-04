@@ -112,21 +112,22 @@ The author primarily uses this application in the following environment:
 
 Windows 7
 
-32 bit Python 3.6.1
+32 bit Python 3.7.2
 
 These packages:
 
-cx-Oracle (6.2.1)
+cryptography (2.3.1)
+cx-Oracle (7.0.0)
 cycler (0.10.0)
-matplotlib (2.0.2)
-numpy (1.12.1)
-pip (9.0.1)
-pyparsing (2.2.0)
-python-dateutil (2.6.0)
-pytz (2017.2)
-setuptools (28.8.0)
-six (1.10.0)
-wxPython (4.0.0a2)
+matplotlib (3.0.0)
+numpy (1.15.2)
+pip (18.1)
+pyparsing (2.2.2)
+python-dateutil (2.7.3)
+pytz (2018.5)
+setuptools (40.6.2)
+six (1.11.0)
+wxPython (4.0.3)
 
 I had to do the following steps to configure Matplotlib to use wxPython:
 

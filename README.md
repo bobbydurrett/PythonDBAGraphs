@@ -40,6 +40,8 @@ are helpful for Oracle database performance tuning.
 * `onesysstat.py` - Shows a single system statistic for one instance
 
 * `space.py` - Shows overall tablespace usage over time
+
+* `directwrites.py` - shows direct write io which could correspond to nologging operations
           
 ## Command line help:
 ```

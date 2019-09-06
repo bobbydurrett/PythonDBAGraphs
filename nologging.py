@@ -21,7 +21,7 @@ bobby@bobbydurrettdba.com
 
 nologging.py
 
-Shows possible nologging write I/O in time period. 
+Shows write I/O statistics that may relate to nologging write I/O in time period. 
 
 """
 
@@ -36,8 +36,8 @@ def nologging(start_time,end_time,instance_number):
     
 select 
 sn.END_INTERVAL_TIME,
-(adirect.SMALL_WRITE_MEGABYTES+adirect.LARGE_WRITE_MEGABYTES-bdirect.SMALL_WRITE_MEGABYTES-bdirect.LARGE_WRITE_MEGABYTES)+
-(adbwr.SMALL_WRITE_MEGABYTES+adbwr.LARGE_WRITE_MEGABYTES-bdbwr.SMALL_WRITE_MEGABYTES-bdbwr.LARGE_WRITE_MEGABYTES)-
+(adirect.SMALL_WRITE_MEGABYTES+adirect.LARGE_WRITE_MEGABYTES-bdirect.SMALL_WRITE_MEGABYTES-bdirect.LARGE_WRITE_MEGABYTES),
+(adbwr.SMALL_WRITE_MEGABYTES+adbwr.LARGE_WRITE_MEGABYTES-bdbwr.SMALL_WRITE_MEGABYTES-bdbwr.LARGE_WRITE_MEGABYTES),
 (algwr.SMALL_WRITE_MEGABYTES+algwr.LARGE_WRITE_MEGABYTES-blgwr.SMALL_WRITE_MEGABYTES-blgwr.LARGE_WRITE_MEGABYTES)
 from 
 DBA_HIST_IOSTAT_FUNCTION bdirect, 
@@ -99,9 +99,9 @@ util.exit_no_results(results)
 myplot.xdatetimes = results[0]
 myplot.ylists = results[1:]
     
-myplot.title = "NOLOGGING Write IO for "+database+" database, instance "+instance_number
+myplot.title = "Write IO that may relate to NOLOGGING for "+database+" database, instance "+instance_number
 myplot.ylabel1 = "Megabytes"
     
-myplot.ylistlabels=["NOLOGGING Writes"]
+myplot.ylistlabels=["Direct Writes","DBWR","LGWR"]
 
 myplot.line()

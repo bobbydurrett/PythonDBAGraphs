@@ -41,9 +41,7 @@ are helpful for Oracle database performance tuning.
 
 * `space.py` - Shows overall tablespace usage over time
 
-* `directwrites.py` - shows direct write io which could correspond to nologging operations
-
-* `nologging.py` - rough estimate of nologging write io
+* `nologging.py` - write I/O statistics that may relate to nologging write I/O
           
 ## Command line help:
 ```

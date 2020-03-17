@@ -41,7 +41,9 @@ are helpful for Oracle database performance tuning.
 
 * `space.py` - Shows overall tablespace usage over time
 
-* `nologging.py` - write I/O statistics that may relate to nologging write I/O
+* `nologging.py` - Write I/O statistics that may relate to nologging write I/O
+
+* `ashcpuprog.py` - Similar to ashcpu.py but using PROGRAM instead of MACHINE. Works with 10.2.
           
 ## Command line help:
 ```

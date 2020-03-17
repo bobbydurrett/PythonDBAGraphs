@@ -58,6 +58,7 @@ directories_file = 'directories.txt'
 username_file = 'username.txt'
 ashcpu_file = 'ashcpufile.txt'
 groupsigs_file = 'groupofsignatures.txt'
+ashcpuprog_file = 'ashcpuprogfile.txt'
 
 # Oracle user
 

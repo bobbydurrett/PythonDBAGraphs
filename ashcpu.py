@@ -56,7 +56,7 @@ WHEN  UPPER(MACHINE) like '%webhost%'  THEN 'WEBFARM'
 WHEN  UPPER(MACHINE) like '%mobhost%'  THEN 'MOBILE'
 ELSE 'OTHER' END labels,
 to_char(sample_time,'YYYY-MM-DD') WEDNESDAY_DATE,
-(count(*)*10)/(10*3600*12) percent_cpu
+(count(*)*10)/(10*3600*(select to_number(value) from v$parameter where name='cpu_count')) percent_cpu
 from DBA_HIST_ACTIVE_SESS_HISTORY
 where
 to_char(SAMPLE_TIME,'DAY')='WEDNESDAY' and
@@ -166,7 +166,7 @@ select
         q_string += """ labels,
 to_char(sample_time,'YYYY-MM-DD') """
         q_string += self.day+"_DATE,\n"
-        q_string += """(count(*)*10)/(10*3600*12) percent_cpu
+        q_string += """(count(*)*10)/(10*3600*(select to_number(value) from v$parameter where name='cpu_count')) percent_cpu
 from DBA_HIST_ACTIVE_SESS_HISTORY
 where
 """

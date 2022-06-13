@@ -44,6 +44,8 @@ are helpful for Oracle database performance tuning.
 * `nologging.py` - Write I/O statistics that may relate to nologging write I/O
 
 * `ashcpuprog.py` - Similar to ashcpu.py but using PROGRAM instead of MACHINE. Works with 10.2.
+
+* `activeshared.py` - Average active shared server sessions between AWR snapshots
           
 ## Command line help:
 ```

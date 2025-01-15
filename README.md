@@ -46,6 +46,8 @@ are helpful for Oracle database performance tuning.
 * `ashcpuprog.py` - Similar to ashcpu.py but using PROGRAM instead of MACHINE. Works with 10.2.
 
 * `activeshared.py` - Average active shared server sessions between AWR snapshots
+
+* `redologs.py` - Number of archived redo logs per hour
           
 ## Command line help:
 ```

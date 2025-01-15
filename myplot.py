@@ -405,16 +405,6 @@ def line():
     plt.legend(ylistlabels,loc='upper left')
     plt.autoscale(tight=True)
     
-    # subplots_adjust settings - single plot so zero space between plots
-    vleft  = 0.06  # the left side of the subplots of the figure
-    vright = 0.97    # the right side of the subplots of the figure
-    vbottom = 0.12   # the bottom of the subplots of the figure
-    vtop = 0.95      # the top of the subplots of the figure
-    vwspace = 0.0   # the amount of width reserved for blank space between subplots
-    vhspace = 0.0   # the amount of height reserved for white space between subplots
-
-    plt.subplots_adjust(left=vleft,right=vright,bottom=vbottom,top=vtop,wspace=vwspace,hspace=vhspace)
-
     fileorscreen(title+'.png')
     
     return    
@@ -463,19 +453,7 @@ def line_2subplots():
     loc=mdates.AutoDateLocator()
     datetimefmt = mdates.AutoDateFormatter(loc)
     ax.xaxis.set_major_formatter(datetimefmt)
-    ax.xaxis.set_major_locator(loc)
-    
-# subplots_adjust settings
-    vleft  = 0.07  # the left side of the subplots of the figure
-    vright = 0.97    # the right side of the subplots of the figure
-#    vbottom = 0.15   # the bottom of the subplots of the figure
-    vbottom = 0.10   # the bottom of the subplots of the figure
-    vtop = 0.95      # the top of the subplots of the figure
-    vwspace = 0.0   # the amount of width reserved for blank space between subplots
-    vhspace = 0.08   # the amount of height reserved for white space between subplots
-
-    plt.subplots_adjust(left=vleft,right=vright,bottom=vbottom,top=vtop,wspace=vwspace,hspace=vhspace)
-    
+    ax.xaxis.set_major_locator(loc)    
 
     fileorscreen(title+'.png')
        
@@ -551,17 +529,7 @@ def line_4subplots():
     datetimefmt = mdates.AutoDateFormatter(loc)
     ax.xaxis.set_major_formatter(datetimefmt)
     ax.xaxis.set_major_locator(loc)
-    
-# subplots_adjust settings
-    vleft  = 0.07  # the left side of the subplots of the figure
-    vright = 0.97    # the right side of the subplots of the figure
-    vbottom = 0.10   # the bottom of the subplots of the figure
-    vtop = 0.95      # the top of the subplots of the figure
-    vwspace = 0.1   # the amount of width reserved for blank space between subplots
-    vhspace = 0.08   # the amount of height reserved for white space between subplots
-
-    plt.subplots_adjust(left=vleft,right=vright,bottom=vbottom,top=vtop,wspace=vwspace,hspace=vhspace)
-    
+        
     fileorscreen(title+'.png')
     
     return

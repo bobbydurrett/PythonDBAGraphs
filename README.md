@@ -124,28 +124,6 @@ These packages:
 * six (1.11.0)
 * wxPython (4.0.3)
 
-I had to do the following steps to configure Matplotlib to use wxPython:
-
-Download s.py from this URL:
-
-https://gist.github.com/bobbydurrett/a65c9c457f155a0ed38a9643b05ce8f5#file-s-py
-
-Run this command:
-
-`python s.py --verbose-helpful `
-
-Output includes a line like this:
-```
-loaded rc file C:\Users\myuser\AppData\Local\Programs\Python\Python36-32\lib\site-packages\matplotlib\mpl-data\matplotlibrc
-```
-I edited the matplotlibrc to use wx by setting backend to WXAgg. Here is the diff from the original matplotlibrc:
-```
-diff matplotlibrc.original matplotlibrc
-38c38
-< backend      : TkAgg
----
-> backend      : WXAgg
-```
 ## Configuration:
 
 The program uses certain directories. The paths to these directories

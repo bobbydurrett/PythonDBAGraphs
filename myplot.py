@@ -39,7 +39,7 @@ graph_dimensions=(16,9)
 graph_dpi=100
 
 # destination is where the graph will go - screen or file
-# set in dbgraphs.py
+# set in util.script_startup
 
 destination='screen'
 

@@ -105,31 +105,35 @@ Enter password for MYUSER: MYPASSWORD
 
 The author primarily uses this application in the following environment:
 
-* Windows 10
+* Windows 11
 
-* 32 bit Python 3.7.2
+* 64 bit Python 3.13.3
 
 These packages:
 
-* cryptography (2.3.1)
-* cx-Oracle (7.0.0)
-* cycler (0.10.0)
-* matplotlib (3.0.0)
-* numpy (1.15.2)
-* pip (18.1)
-* pyparsing (2.2.2)
-* python-dateutil (2.7.3)
-* pytz (2018.5)
-* setuptools (40.6.2)
-* six (1.11.0)
-* wxPython (4.0.3)
+* cffi            1.17.1
+* contourpy       1.3.2
+* cryptography    45.0.3
+* cycler          0.12.1
+* fonttools       4.58.1
+* kiwisolver      1.4.8
+* matplotlib      3.10.3
+* numpy           2.2.6
+* oracledb        3.1.1
+* packaging       25.0
+* pillow          11.2.1
+* pip             25.1.1
+* pycparser       2.22
+* pyparsing       3.2.3
+* python-dateutil 2.9.0.post0
+* six             1.17.0
 
 ## Configuration:
 
 The program uses certain directories. The paths to these directories
 are stored in the file `directories.txt` which is kept in the same 
 location as the `util.py` script. The directories are the configuration, 
-password, and output directories.
+password, output, db network config, and db client directories.
 
 The configuration directory contains the file `username.txt`
 which has the Oracle user name.

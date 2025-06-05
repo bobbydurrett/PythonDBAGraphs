@@ -25,8 +25,9 @@ Oracle database related code
 
 """
 
-import cx_Oracle
+import oracledb
 import sys
+import util
 
 # Flag to show SQL statements as they are executed or not.
 # Either N or Y.
@@ -44,13 +45,15 @@ showdata='N'
 class connection:
     def __init__(self,username,password,database):
         """ Login to database and open cursor """
-        connect_string = username+'/'+password+'@'+database
         try:
-            self.con = cx_Oracle.connect(connect_string)
-        except cx_Oracle.DatabaseError as e:
+            oracledb.init_oracle_client(lib_dir=util.db_lib_dir,config_dir=util.db_config_dir)
+            self.con = oracledb.connect(user=username, password=password, dsn=database)
+        except oracledb.DatabaseError as e:
             print("Error logging in: "+str(e.args[0]))
             print("Username: "+username)
             print("Database: "+database)
+            print("Oracle client directory: "+util.db_lib_dir)
+            print("Oracle network config directory: "+util.db_config_dir)
             sys.exit(-1)
         self.cur = self.con.cursor()
         self.column_names=[]
@@ -189,7 +192,7 @@ class connection:
         """
         try:
             self.run_return_no_results(non_query)
-        except cx_Oracle.DatabaseError:
+        except oracledb.DatabaseError:
             pass
         
         return

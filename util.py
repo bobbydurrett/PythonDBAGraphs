@@ -46,6 +46,8 @@ names, file names, and Oracle user name and password.
 config_dir = None
 password_dir = None
 output_dir = None
+db_config_dir = None
+db_lib_dir = None
 
 # files
 
@@ -103,8 +105,10 @@ def get_directories():
     source_dir = get_source_dir()
     lines = read_config_file(source_dir,util.directories_file)
     util.config_dir = lines[2]
-    util.password_dir= lines[3]
-    util.output_dir= lines[4]
+    util.password_dir = lines[3]
+    util.output_dir = lines[4]
+    util.db_config_dir = lines[5]
+    util.db_lib_dir = lines[6]
 
 def get_user():
     """ 

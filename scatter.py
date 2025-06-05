@@ -1,7 +1,8 @@
-import cx_Oracle
+import oracledb
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+import util
 
 # get database login information from command line
 # username password database
@@ -10,10 +11,15 @@ import sys
 if len(sys.argv) != 4:
     print("Arguments: username password database")
     sys.exit()
-
+    
 username=sys.argv[1]
 password=sys.argv[2]
 database=sys.argv[3]
+
+# Get oracle directories and init client with them
+
+util.get_directories()
+oracledb.init_oracle_client(lib_dir=util.db_lib_dir,config_dir=util.db_config_dir)
 
 # get day of week, hour of day, and cpu percent used
 # from DBA_HIST_OSSTAT
@@ -57,9 +63,8 @@ order by my.SNAP_ID
 """
 
 # run query retrieve all rows
-
 connect_string = username+'/'+password+'@'+database
-con = cx_Oracle.connect(connect_string)
+con = oracledb.connect(connect_string)
 cur = con.cursor()
 
 cur.execute(query)
